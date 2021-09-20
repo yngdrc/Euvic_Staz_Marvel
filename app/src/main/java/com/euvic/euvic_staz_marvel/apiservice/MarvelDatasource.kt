@@ -5,7 +5,11 @@ import com.euvic.euvic_staz_marvel.models.CharactersDataClass
 import io.reactivex.Observable
 
 class MarvelDatasource {
-    fun getCharacters(): Observable<CharactersDataClass> {
-        return RetrofitBuilder.apiService.getCharacters()
+    fun getCharacters(offset: Int): Observable<CharactersDataClass> {
+        return RetrofitBuilder.apiService.getCharacters(offset)
+    }
+
+    fun searchCharacters(searchText: CharSequence): Observable<CharactersDataClass> {
+        return RetrofitBuilder.apiService.searchCharacters(searchText)
     }
 }

@@ -6,33 +6,33 @@ import com.google.gson.annotations.SerializedName
 data class Result(
     @Expose
     @SerializedName("comics")
-    val comics: Comics,
+    val comics: Comics?,
 
     @Expose
     @SerializedName("description")
-    val description: String,
+    val description: String?,
 
     @Expose
     @SerializedName("id")
-    val id: Int,
+    val id: Int?,
 
     @Expose
     @SerializedName("name")
-    val name: String,
+    val name: String?,
 
     @Expose
     @SerializedName("resourceURI")
-    val resourceURI: String,
+    val resourceURI: String?,
 
     @Expose
     @SerializedName("series")
-    val series: Series,
+    val series: Series?,
 
     @Expose
     @SerializedName("thumbnail")
-    val thumbnail: Thumbnail,
+    val thumbnail: Thumbnail?,
 
     @Expose
     @SerializedName("urls")
-    val urls: List<Url>
+    val urls: List<Url>?
 )

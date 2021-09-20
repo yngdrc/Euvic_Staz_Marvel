@@ -1,52 +1,55 @@
 package com.euvic.euvic_staz_marvel.main
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentContainerView
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.euvic.euvic_staz_marvel.R
 import com.euvic.euvic_staz_marvel.apiservice.MarvelDatasource
 import com.euvic.euvic_staz_marvel.models.CharactersDataClass
 import com.hannesdorfmann.mosby3.mvi.MviActivity
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import com.euvic.euvic_staz_marvel.characters.CharactersAdapter
+import com.euvic.euvic_staz_marvel.characters.CharactersFragment
+import com.euvic.euvic_staz_marvel.characters.CharactersFragmentUI
+import com.euvic.euvic_staz_marvel.utils.Constants.Companion.MAIN_LAYOUT_ID
+import org.jetbrains.anko.linearLayout
+import org.jetbrains.anko.matchParent
+import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.support.v4.swipeRefreshLayout
 
 
-class MainActivity : MviActivity<MainView, MainPresenter>(), MainView {
+class MainActivity : AppCompatActivity() {
     lateinit var mainContainer: LinearLayout
-    lateinit var swipeRefreshLayout: SwipeRefreshLayout
-    lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: CharactersAdapter
+    private lateinit var finalHost: NavHostFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-//        val frame = FrameLayout(this)
-//        frame.id = MAIN_ACTIVITY_CONTAINER_ID
-//        setContentView(
-//            frame, ViewGroup.LayoutParams(
-//                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-//            )
-//        )
-//        if (savedInstanceState == null) {
-//            supportFragmentManager.beginTransaction().add(MAIN_ACTIVITY_CONTAINER_ID, CharactersFragment()).commit()
-//        }
-    }
-
-    override fun createPresenter(): MainPresenter = MainPresenter()
-
-    override fun getCharacters(): Observable<CharactersDataClass> {
-        return MarvelDatasource().getCharacters().subscribeOn(Schedulers.io())
-    }
-
-    override fun render(viewState: MainViewState) {
-        if (viewState.loading) {
-            Log.d("VIEW STATE", "LOADING")
+        mainContainer = linearLayout {
+            lparams(matchParent, matchParent)
+            id = MAIN_LAYOUT_ID
         }
-        if (viewState.characters!=null) {
-            adapter = CharactersAdapter(viewState.characters!!.data.results)
-            Log.d("VIEW STATE", "GOT CHARACTERS")
-        }
+        setContentView(mainContainer, ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT)
+        )
+
+        // sets the navigation host fragment to fragment container
+        finalHost = NavHostFragment.create(R.navigation.fragments_navigation)
+        supportFragmentManager.beginTransaction()
+                .replace(mainContainer.id, finalHost)
+                .setPrimaryNavigationFragment(finalHost)
+                .commit()
     }
 }

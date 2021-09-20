@@ -2,8 +2,9 @@ package com.euvic.euvic_staz_marvel.main
 
 import com.euvic.euvic_staz_marvel.models.CharactersDataClass
 
-interface PartialMainState {
-    class Loading : PartialMainState
-    class GotCharacters(var characters: CharactersDataClass) : PartialMainState
-    class Error(var error: Throwable) : PartialMainState
+sealed class PartialMainState : ViewStateChangeBase {
+    data class Loading(val isLoading: Boolean) : PartialMainState()
+    data class GotCharacters(val characters: CharactersDataClass) : PartialMainState()
+    data class FoundCharacters(val foundCharacters: CharactersDataClass) : PartialMainState()
+    data class Error(val error: Throwable) : PartialMainState()
 }

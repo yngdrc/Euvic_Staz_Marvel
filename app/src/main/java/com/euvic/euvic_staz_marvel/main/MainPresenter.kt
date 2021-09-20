@@ -1,6 +1,8 @@
 package com.euvic.euvic_staz_marvel.main
 
 import android.util.Log
+import com.euvic.euvic_staz_marvel.apiservice.MarvelDatasource
+import com.euvic.euvic_staz_marvel.characters.CharactersAdapter
 import com.euvic.euvic_staz_marvel.main.PartialMainState.Loading
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
@@ -9,43 +11,42 @@ import io.reactivex.schedulers.Schedulers
 
 class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
 
+    private val reducer by lazy { MainReducer() }
+    private val marvelDatasource: MarvelDatasource = MarvelDatasource()
+    private lateinit var adapter: CharactersAdapter
+
+    // tu utworzyc datasource
     override fun bindIntents() {
-        val getCharacters: Observable<PartialMainState> = intent(MainView::getCharacters)
-            .map { characters ->
-                Log.d("RESULT", characters.toString())
-                PartialMainState.GotCharacters(characters) as PartialMainState
+        val getCharacters: Observable<PartialMainState> = intent { it.getCharacters }
+            .flatMap { offset ->
+                marvelDatasource.getCharacters(offset).map {
+                    PartialMainState.GotCharacters(it) as PartialMainState
+                }.subscribeOn(Schedulers.io())
             }
-            .startWith(Loading())
+            .startWith(Loading(true))
             .onErrorReturn { error -> PartialMainState.Error(error) }
             .subscribeOn(Schedulers.io())
 
-        val mainViewState: MainViewState = MainViewState(false, null, null)
-        val allIntents: Observable<PartialMainState> = getCharacters
+        val searchCharacters: Observable<PartialMainState> = intent { it.searchCharacters }
+            .flatMap { searchText ->
+                Log.d("search", searchText.toString())
+                marvelDatasource.searchCharacters(searchText).map {
+                    PartialMainState.FoundCharacters(it) as PartialMainState
+                }.subscribeOn(Schedulers.io())
+            }
+            .startWith(Loading(true))
+            .onErrorReturn { error -> PartialMainState.Error(error) }
+            .subscribeOn(Schedulers.io())
+
+        val stream = Observable
+            .merge(getCharacters, searchCharacters)
             .observeOn(AndroidSchedulers.mainThread())
+            .scan(MainViewState()) { previousState: MainViewState, changedState: PartialMainState ->
+                return@scan reducer.reduce(previousState, changedState)
+            }
 
-        subscribeViewState(allIntents.scan(mainViewState, this::viewStateReducer), MainView::render)
-    }
+        subscribeViewState(stream) { view, viewState -> view.render(viewState) }
 
-    fun viewStateReducer(
-        previousState: MainViewState,
-        changedStatePart: PartialMainState
-    ): MainViewState {
-        val newState = previousState
-
-        if (changedStatePart is Loading) {
-            newState.loading = true
-        }
-
-        if (changedStatePart is PartialMainState.GotCharacters) {
-            newState.loading = false
-            newState.characters = (changedStatePart as PartialMainState.GotCharacters).characters
-        }
-
-        if (changedStatePart is PartialMainState.Error) {
-            newState.loading = false
-            newState.error = changedStatePart.error
-        }
-        return newState
     }
 
 }

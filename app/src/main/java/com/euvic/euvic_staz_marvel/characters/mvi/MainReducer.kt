@@ -1,8 +1,8 @@
-package com.euvic.euvic_staz_marvel.main
+package com.euvic.euvic_staz_marvel.characters.mvi
 
-import com.euvic.euvic_staz_marvel.characters.CharactersAdapter
+import com.euvic.euvic_staz_marvel.main.ReducerBase
 
-class MainReducer: MainReducerBase<MainViewState, PartialMainState> {
+class MainReducer: ReducerBase<MainViewState, PartialMainState> {
 
     override fun reduce(previousState: MainViewState, changedState: PartialMainState): MainViewState {
         val newState = previousState.copy()

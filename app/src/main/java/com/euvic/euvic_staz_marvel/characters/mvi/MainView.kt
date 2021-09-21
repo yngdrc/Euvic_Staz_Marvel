@@ -1,6 +1,5 @@
-package com.euvic.euvic_staz_marvel.main
+package com.euvic.euvic_staz_marvel.characters.mvi
 
-import com.euvic.euvic_staz_marvel.models.CharactersDataClass
 import com.hannesdorfmann.mosby3.mvp.MvpView
 import io.reactivex.Observable
 

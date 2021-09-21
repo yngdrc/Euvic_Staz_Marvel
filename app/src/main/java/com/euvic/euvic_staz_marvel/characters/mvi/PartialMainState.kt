@@ -1,5 +1,6 @@
-package com.euvic.euvic_staz_marvel.main
+package com.euvic.euvic_staz_marvel.characters.mvi
 
+import com.euvic.euvic_staz_marvel.main.ViewStateChangeBase
 import com.euvic.euvic_staz_marvel.models.CharactersDataClass
 
 sealed class PartialMainState : ViewStateChangeBase {

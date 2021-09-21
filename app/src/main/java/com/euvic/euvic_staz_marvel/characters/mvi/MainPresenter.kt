@@ -1,9 +1,9 @@
-package com.euvic.euvic_staz_marvel.main
+package com.euvic.euvic_staz_marvel.characters.mvi
 
 import android.util.Log
 import com.euvic.euvic_staz_marvel.apiservice.MarvelDatasource
 import com.euvic.euvic_staz_marvel.characters.CharactersAdapter
-import com.euvic.euvic_staz_marvel.main.PartialMainState.Loading
+import com.euvic.euvic_staz_marvel.characters.mvi.PartialMainState.Loading
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -18,25 +18,27 @@ class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
     // tu utworzyc datasource
     override fun bindIntents() {
         val getCharacters: Observable<PartialMainState> = intent { it.getCharacters }
+            .observeOn(Schedulers.io())
             .flatMap { offset ->
-                marvelDatasource.getCharacters(offset).map {
-                    PartialMainState.GotCharacters(it) as PartialMainState
-                }.subscribeOn(Schedulers.io())
+                marvelDatasource.getCharacters(offset)
+            }.map {
+                PartialMainState.GotCharacters(it) as PartialMainState
             }
             .startWith(Loading(true))
             .onErrorReturn { error -> PartialMainState.Error(error) }
-            .subscribeOn(Schedulers.io())
 
+        // zmienic na getCharacters jak bedzie puste
         val searchCharacters: Observable<PartialMainState> = intent { it.searchCharacters }
+            .observeOn(Schedulers.io())
             .flatMap { searchText ->
                 Log.d("search", searchText.toString())
-                marvelDatasource.searchCharacters(searchText).map {
-                    PartialMainState.FoundCharacters(it) as PartialMainState
-                }.subscribeOn(Schedulers.io())
+                marvelDatasource.searchCharacters(searchText)
+            }
+            .map {
+                PartialMainState.FoundCharacters(it) as PartialMainState
             }
             .startWith(Loading(true))
             .onErrorReturn { error -> PartialMainState.Error(error) }
-            .subscribeOn(Schedulers.io())
 
         val stream = Observable
             .merge(getCharacters, searchCharacters)

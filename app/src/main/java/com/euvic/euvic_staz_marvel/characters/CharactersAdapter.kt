@@ -30,11 +30,14 @@ class CharactersAdapter(val characters: MutableList<Result>): RecyclerView.Adapt
         fun bind(character: Result) {
             with(character) {
                 val thumbnail: Thumbnail? = character.thumbnail
+                val imageView: ImageView = itemView.find<ImageView>(R.id.heroImage)
+                imageView.layoutParams.height = 150
+                imageView.layoutParams.width = 150
                 itemView.find<TextView>(R.id.heroName).text = character.name
                 Glide.with(itemView.context)
                     .load("${thumbnail?.path?.replace("http", "https")}/standard_xlarge.${thumbnail?.extension}")
-                    .apply(RequestOptions().override(150, 150))
-                    .into(itemView.find<ImageView>(R.id.heroImage))
+                    .placeholder(R.drawable.image_placeholder_marvel_square)
+                    .into(imageView)
             }
         }
     }

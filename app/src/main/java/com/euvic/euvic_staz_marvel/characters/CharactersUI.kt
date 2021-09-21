@@ -2,6 +2,7 @@ package com.euvic.euvic_staz_marvel.characters
 
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
@@ -35,8 +36,8 @@ class CharactersUI : AnkoComponent<ViewGroup> {
                             id = R.id.heroName
                             textColor = Color.WHITE
                             leftPadding = dip(16)
-                            topPadding = dip(16)
-                        }
+                            gravity = Gravity.CENTER_VERTICAL
+                        }.lparams(wrapContent, matchParent)
                     }
                 }
             }

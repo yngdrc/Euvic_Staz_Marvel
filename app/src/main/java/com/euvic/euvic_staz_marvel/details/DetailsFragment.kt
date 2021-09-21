@@ -5,26 +5,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.euvic.euvic_staz_marvel.R
-import com.euvic.euvic_staz_marvel.characters.mvi.MainPresenter
-import com.euvic.euvic_staz_marvel.characters.mvi.MainViewState
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsPresenter
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsView
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsViewState
-import com.euvic.euvic_staz_marvel.models.CharactersDataClass
+import com.euvic.euvic_staz_marvel.models.Result
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
 import org.jetbrains.anko.AnkoContext
-import org.jetbrains.anko.find
 import org.jetbrains.anko.support.v4.ctx
-import java.util.concurrent.TimeUnit
+import org.jetbrains.anko.support.v4.dip
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -81,13 +74,7 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
             Log.d("DetailsFragment", viewState.details.toString())
             detailsFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
             val details = viewState.details!!.data.results[0]
-            Glide.with(requireContext())
-                .load("${details.thumbnail?.path?.replace("http", "https")}/standard_fantastic.${details.thumbnail?.extension}")
-                .apply(RequestOptions().override(250, 250))
-                .circleCrop()
-                .into(detailsFragmentUI.characterImage)
-            detailsFragmentUI.characterName.text = details.name
-            detailsFragmentUI.characterDescription.text = details.description
+            setDetailsContent(details)
         }
         if(viewState.empty==1) {
             Log.d("Empty", "empty")
@@ -97,5 +84,17 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
             Log.d("DetailsFragment", viewState.error.toString())
             detailsFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
         }
+    }
+
+    private fun setDetailsContent(details: Result) {
+        detailsFragmentUI.characterImage.layoutParams.height = dip(100)
+        detailsFragmentUI.characterImage.layoutParams.width = dip(100)
+        Glide.with(requireContext())
+            .load("${details.thumbnail?.path?.replace("http", "https")}/standard_fantastic.${details.thumbnail?.extension}")
+            .placeholder(R.drawable.image_placeholder_marvel_circle)
+            .circleCrop()
+            .into(detailsFragmentUI.characterImage)
+        detailsFragmentUI.characterName.text = details.name
+        detailsFragmentUI.characterDescription.text = details.description
     }
 }

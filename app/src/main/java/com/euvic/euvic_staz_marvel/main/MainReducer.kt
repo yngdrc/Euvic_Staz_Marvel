@@ -11,24 +11,35 @@ class MainReducer: MainReducerBase<MainViewState, PartialMainState> {
                 newState.loading = true
                 newState.characters = null
                 newState.foundCharacters = null
+                newState.details = null
                 newState.error = null
             }
             is PartialMainState.GotCharacters -> {
                 newState.loading = false
                 newState.characters = (changedState as PartialMainState.GotCharacters).characters
                 newState.foundCharacters = null
+                newState.details = null
                 newState.error = null
             }
             is PartialMainState.FoundCharacters -> {
                 newState.loading = false
                 newState.characters = null
                 newState.foundCharacters = (changedState as PartialMainState.FoundCharacters).foundCharacters
+                newState.details = null
+                newState.error = null
+            }
+            is PartialMainState.ReceivedDetails -> {
+                newState.loading = false
+                newState.characters = null
+                newState.foundCharacters = null
+                newState.details = (changedState as PartialMainState.ReceivedDetails).details
                 newState.error = null
             }
             is PartialMainState.Error -> {
                 newState.loading = false
                 newState.characters = null
                 newState.foundCharacters = null
+                newState.details = null
                 newState.error = changedState.error
             }
 

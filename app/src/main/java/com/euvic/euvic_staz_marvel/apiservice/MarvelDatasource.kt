@@ -9,6 +9,10 @@ class MarvelDatasource {
         return RetrofitBuilder.apiService.getCharacters(offset)
     }
 
+    fun getDetails(characterId: Int): Observable<CharactersDataClass> {
+        return RetrofitBuilder.apiService.getCharacterById(characterId)
+    }
+
     fun searchCharacters(searchText: CharSequence): Observable<CharactersDataClass> {
         return RetrofitBuilder.apiService.searchCharacters(searchText)
     }

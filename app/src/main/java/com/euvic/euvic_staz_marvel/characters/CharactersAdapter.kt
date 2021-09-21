@@ -12,11 +12,16 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.euvic.euvic_staz_marvel.R
 import com.euvic.euvic_staz_marvel.models.Thumbnail
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
+// ograniczyc obiekty w liscie tylko do tych wyswietlanych
 class CharactersAdapter(val characters: MutableList<Result>): RecyclerView.Adapter<CharactersAdapter.CharactersViewHolder>() {
+    val subject: Subject<Int> = PublishSubject.create()
+
     inner class CharactersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(character: Result) {
@@ -39,10 +44,12 @@ class CharactersAdapter(val characters: MutableList<Result>): RecyclerView.Adapt
         )
     }
 
+    // stworzyc PublishSubject i tutaj onNext
     override fun onBindViewHolder(holder: CharactersViewHolder, position: Int) {
         holder.bind(characters[position])
         holder.itemView.onClick {
             Log.d("ADAPTER", position.toString())
+            characters[position].id?.let { id -> subject.onNext(id) }
         }
     }
 

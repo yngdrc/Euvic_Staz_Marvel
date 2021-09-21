@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.core.view.size
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.euvic.euvic_staz_marvel.R
@@ -22,11 +24,15 @@ import com.hannesdorfmann.mosby3.mvi.MviFragment
 import com.jakewharton.rxbinding3.recyclerview.scrollEvents
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import com.jakewharton.rxbinding3.view.clicks
+import com.jakewharton.rxbinding3.widget.queryTextChangeEvents
 import com.jakewharton.rxbinding3.widget.queryTextChanges
+import com.jakewharton.rxbinding3.widget.textChanges
 import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import org.jetbrains.anko.Android
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.setContentView
@@ -40,6 +46,8 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
     private val adapter: CharactersAdapter
     private lateinit var charactersFragmentUI: CharactersFragmentUI
     private var charactersList: MutableList<Result> = mutableListOf()
+    private lateinit var searchViewEditText: EditText
+
 
     init {
         adapter = CharactersAdapter(charactersList)
@@ -61,6 +69,11 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
         return charactersFragmentUI.createView(AnkoContext.create(ctx, this))
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        searchViewEditText = charactersFragmentUI.searchView.findViewById<EditText>(charactersFragmentUI.searchView.context.resources.getIdentifier("android:id/search_src_text", null, null))
+    }
+
     companion object {
         fun newInstance(param1: String) =
             CharactersFragment().apply {
@@ -72,10 +85,23 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
 
     override fun createPresenter(): MainPresenter = MainPresenter()
 
+    // rozdzielic intenty
+    // zeby usunac
     override val getCharacters: Observable<Int>
         get() = Observable.merge(
             charactersFragmentUI.swipeRefreshLayout.refreshes()
+                .mergeWith(
+                    searchViewEditText.textChanges()
+                        .filter { searchText ->
+                            searchText.isEmpty()
+                        }
+                        .map {
+                            clearAdapter(charactersList)
+                            Unit
+                        }
+                )
                 .map {
+                    clearAdapter(charactersList)
                     DEFAULT_OFFSET
                 },
             charactersFragmentUI.rv.scrollEvents()
@@ -83,6 +109,8 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
                 .filter {
                     val layoutManager = it.view.layoutManager as LinearLayoutManager
                     layoutManager.findLastCompletelyVisibleItemPosition() == adapter.itemCount - 1
+                        && charactersFragmentUI.searchView.query.isEmpty()
+                            && adapter.itemCount != 0
                 }
                 .map {
                     adapter.itemCount
@@ -90,16 +118,23 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
         )
 
     override val searchCharacters: Observable<CharSequence>
-        get() = charactersFragmentUI.searchView.queryTextChanges()
-            .filter { searchText ->
-                searchText.isNotEmpty()
-            }
-            .debounce(500, TimeUnit.MILLISECONDS)
+        get() = searchViewEditText.textChanges()
+            .skipInitialValue()
             .map { searchText ->
                 searchText.trim()
             }
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .observeOn(Schedulers.io())
+            .filter { searchText ->
+                searchText.isNotEmpty()
+            }
+            //.debounce(500, TimeUnit.MILLISECONDS)
+
+    override val getDetails: Observable<Int>
+        get() = adapter.subject
+
+    override fun onPause() {
+        super.onPause()
+        clearAdapter(charactersList)
+    }
 
     override fun render(viewState: MainViewState) {
         if(viewState.loading) {
@@ -108,21 +143,32 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
         if(viewState.characters!=null) {
             Log.d("ViewState", viewState.characters.toString())
             charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
-            charactersList.addAll(viewState.characters!!.data.results)
-            adapter.notifyItemInserted(adapter.characters.size - 1)
+            addToAdapter(viewState.characters!!.data.results, charactersList)
         }
         if(viewState.foundCharacters!=null) {
             Log.d("ViewState", viewState.foundCharacters.toString())
             charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
-            val count = charactersList.size
-            charactersList.clear()
-            adapter.notifyItemRangeRemoved(0, count)
-            charactersList.addAll(viewState.foundCharacters!!.data.results)
-            adapter.notifyItemInserted(charactersList.size - 1)
+            clearAdapter(charactersList)
+            addToAdapter(viewState.foundCharacters!!.data.results, charactersList)
+        }
+        if (viewState.details!=null) {
+            charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
+            findNavController().navigate(R.id.action_charactersFragment_to_detailsFragment)
         }
         if(viewState.error!=null) {
             Log.d("ViewState", viewState.error.toString())
             charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
         }
+    }
+
+    private fun clearAdapter(list: MutableList<Result>) {
+        val size: Int = list.size
+        list.clear()
+        adapter.notifyItemRangeRemoved(0, size)
+    }
+
+    private fun addToAdapter(newResult: MutableList<Result>, list: MutableList<Result>) {
+        list.addAll(newResult)
+        adapter.notifyItemInserted(list.size - 1)
     }
 }

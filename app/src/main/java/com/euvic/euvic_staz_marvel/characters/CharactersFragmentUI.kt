@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.AbsListView
 import android.widget.LinearLayout
 import android.widget.SearchView
+import android.widget.SearchView.OnQueryTextListener
 import android.widget.TextView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
@@ -22,6 +23,10 @@ import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
+import org.jetbrains.anko.sdk27.coroutines.onClick
+import org.jetbrains.anko.sdk27.coroutines.onFocusChange
+import org.jetbrains.anko.sdk27.coroutines.onQueryTextFocusChange
+import org.jetbrains.anko.sdk27.coroutines.onQueryTextListener
 import org.jetbrains.anko.support.v4.swipeRefreshLayout
 
 class CharactersFragmentUI(private val adapter: CharactersAdapter): AnkoComponent<CharactersFragment> {
@@ -34,7 +39,6 @@ class CharactersFragmentUI(private val adapter: CharactersAdapter): AnkoComponen
         linearLayout {
             orientation = LinearLayout.VERTICAL
             searchView = searchView {
-
             }
             swipeRefreshLayout = swipeRefreshLayout {
                 linearLayout {

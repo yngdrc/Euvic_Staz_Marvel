@@ -1,8 +1,8 @@
-package com.euvic.euvic_staz_marvel.main
+package com.euvic.euvic_staz_marvel.characters.mvi
 
-import com.euvic.euvic_staz_marvel.characters.CharactersAdapter
+import com.euvic.euvic_staz_marvel.main.ReducerBase
 
-class MainReducer: MainReducerBase<MainViewState, PartialMainState> {
+class MainReducer: ReducerBase<MainViewState, PartialMainState> {
 
     override fun reduce(previousState: MainViewState, changedState: PartialMainState): MainViewState {
         val newState = previousState.copy()
@@ -11,35 +11,24 @@ class MainReducer: MainReducerBase<MainViewState, PartialMainState> {
                 newState.loading = true
                 newState.characters = null
                 newState.foundCharacters = null
-                newState.details = null
                 newState.error = null
             }
             is PartialMainState.GotCharacters -> {
                 newState.loading = false
                 newState.characters = (changedState as PartialMainState.GotCharacters).characters
                 newState.foundCharacters = null
-                newState.details = null
                 newState.error = null
             }
             is PartialMainState.FoundCharacters -> {
                 newState.loading = false
                 newState.characters = null
                 newState.foundCharacters = (changedState as PartialMainState.FoundCharacters).foundCharacters
-                newState.details = null
-                newState.error = null
-            }
-            is PartialMainState.ReceivedDetails -> {
-                newState.loading = false
-                newState.characters = null
-                newState.foundCharacters = null
-                newState.details = (changedState as PartialMainState.ReceivedDetails).details
                 newState.error = null
             }
             is PartialMainState.Error -> {
                 newState.loading = false
                 newState.characters = null
                 newState.foundCharacters = null
-                newState.details = null
                 newState.error = changedState.error
             }
 

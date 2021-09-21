@@ -1,7 +1,7 @@
 package com.euvic.euvic_staz_marvel.apiservice
 
-import com.euvic.euvic_staz_marvel.apiservice.RetrofitBuilder
 import com.euvic.euvic_staz_marvel.models.CharactersDataClass
+import com.euvic.euvic_staz_marvel.models.Result
 import io.reactivex.Observable
 
 class MarvelDatasource {

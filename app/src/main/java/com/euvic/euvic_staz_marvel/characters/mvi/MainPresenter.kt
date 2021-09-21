@@ -1,14 +1,13 @@
-package com.euvic.euvic_staz_marvel.main
+package com.euvic.euvic_staz_marvel.characters.mvi
 
 import android.util.Log
 import com.euvic.euvic_staz_marvel.apiservice.MarvelDatasource
 import com.euvic.euvic_staz_marvel.characters.CharactersAdapter
-import com.euvic.euvic_staz_marvel.main.PartialMainState.Loading
+import com.euvic.euvic_staz_marvel.characters.mvi.PartialMainState.Loading
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.jetbrains.anko.Android
 
 class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
 
@@ -41,19 +40,8 @@ class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
             .startWith(Loading(true))
             .onErrorReturn { error -> PartialMainState.Error(error) }
 
-        val getDetails: Observable<PartialMainState> = intent { it.getDetails }
-            .observeOn(Schedulers.io())
-            .flatMap { characterId ->
-                marvelDatasource.getDetails(characterId)
-            }
-            .map { characterDetails ->
-                PartialMainState.ReceivedDetails(characterDetails) as PartialMainState
-            }
-            .startWith(Loading(true))
-            .onErrorReturn { error -> PartialMainState.Error(error) }
-
         val stream = Observable
-            .merge(getCharacters, searchCharacters, getDetails)
+            .merge(getCharacters, searchCharacters)
             .observeOn(AndroidSchedulers.mainThread())
             .scan(MainViewState()) { previousState: MainViewState, changedState: PartialMainState ->
                 return@scan reducer.reduce(previousState, changedState)

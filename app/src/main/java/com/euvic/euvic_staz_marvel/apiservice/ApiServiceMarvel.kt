@@ -2,6 +2,7 @@ package com.euvic.euvic_staz_marvel.apiservice
 
 import com.euvic.euvic_staz_marvel.utils.Constants
 import com.euvic.euvic_staz_marvel.models.CharactersDataClass
+import com.euvic.euvic_staz_marvel.models.Result
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -23,7 +24,6 @@ interface ApiServiceMarvel {
         @Query("ts") ts: String = Constants.TIMESTAMP,
         @Query("apikey") apiKey: String = Constants.API_PUBLIC_KEY,
         @Query("hash") hash: String = Constants.hash(),
-        @Query("limit") limit: String = Constants.RESULTS_LIMIT.toString()
     ): Observable<CharactersDataClass>
 
     @GET("characters")
@@ -32,6 +32,5 @@ interface ApiServiceMarvel {
         @Query("ts") ts: String = Constants.TIMESTAMP,
         @Query("apikey") apiKey: String = Constants.API_PUBLIC_KEY,
         @Query("hash") hash: String = Constants.hash(),
-        //@Query("limit") limit: String = Constants.RESULTS_LIMIT.toString()
     ): Observable<CharactersDataClass>
 }

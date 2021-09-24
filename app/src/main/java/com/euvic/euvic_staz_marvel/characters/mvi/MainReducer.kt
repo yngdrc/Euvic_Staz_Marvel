@@ -1,6 +1,6 @@
 package com.euvic.euvic_staz_marvel.characters.mvi
 
-import com.euvic.euvic_staz_marvel.main.ReducerBase
+import com.euvic.euvic_staz_marvel.utils.ReducerBase
 
 class MainReducer: ReducerBase<MainViewState, PartialMainState> {
 

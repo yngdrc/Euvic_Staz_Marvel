@@ -6,14 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import androidx.core.os.bundleOf
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.euvic.euvic_staz_marvel.R
 import com.euvic.euvic_staz_marvel.characters.mvi.MainPresenter
 import com.euvic.euvic_staz_marvel.characters.mvi.MainView
 import com.euvic.euvic_staz_marvel.characters.mvi.MainViewState
-import com.euvic.euvic_staz_marvel.models.Result
+import com.euvic.euvic_staz_marvel.models.characters.CharactersResult
 import com.euvic.euvic_staz_marvel.utils.Constants.Companion.DEFAULT_OFFSET
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import com.jakewharton.rxbinding3.recyclerview.scrollEvents
@@ -29,7 +26,7 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
     private var param1: String? = null
     private val adapter: CharactersAdapter
     private lateinit var charactersFragmentUI: CharactersFragmentUI
-    private var charactersList: MutableList<Result> = mutableListOf()
+    private var charactersList: MutableList<CharactersResult> = mutableListOf()
     private lateinit var searchViewEditText: EditText
 
 
@@ -118,7 +115,6 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
 
     override fun render(viewState: MainViewState) {
         if(viewState.loading) {
-            Log.d("ViewState", "loading")
         }
         if(viewState.characters!=null) {
             charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
@@ -135,13 +131,13 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
         }
     }
 
-    private fun clearAdapter(list: MutableList<Result>) {
+    private fun clearAdapter(list: MutableList<CharactersResult>) {
         val size: Int = list.size
         list.clear()
         adapter.notifyItemRangeRemoved(0, size)
     }
 
-    private fun addToAdapter(newResult: MutableList<Result>, list: MutableList<Result>) {
+    private fun addToAdapter(newResult: MutableList<CharactersResult>, list: MutableList<CharactersResult>) {
         list.addAll(newResult)
         adapter.notifyItemInserted(list.size - 1)
     }

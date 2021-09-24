@@ -1,4 +1,4 @@
-package com.euvic.euvic_staz_marvel.models
+package com.euvic.euvic_staz_marvel.models.characters
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -14,7 +14,7 @@ data class Series(
 
     @Expose
     @SerializedName("items")
-    val items: List<ItemSeries>,
+    val items: MutableList<ItemSeries>,
 
     @Expose
     @SerializedName("returned")

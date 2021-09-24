@@ -1,7 +1,7 @@
 package com.euvic.euvic_staz_marvel.apiservice
 
-import com.euvic.euvic_staz_marvel.models.CharactersDataClass
-import com.euvic.euvic_staz_marvel.models.Result
+import com.euvic.euvic_staz_marvel.models.characters.CharactersDataClass
+import com.euvic.euvic_staz_marvel.models.series.SeriesDataClass
 import io.reactivex.Observable
 
 class MarvelDatasource {
@@ -15,5 +15,9 @@ class MarvelDatasource {
 
     fun searchCharacters(searchText: CharSequence): Observable<CharactersDataClass> {
         return RetrofitBuilder.apiService.searchCharacters(searchText)
+    }
+
+    fun getSeriesByCharacterId(characterId: Int): Observable<SeriesDataClass> {
+        return RetrofitBuilder.apiService.getComicsByCharacterId(characterId)
     }
 }

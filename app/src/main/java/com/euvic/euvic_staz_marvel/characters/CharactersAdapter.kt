@@ -1,33 +1,27 @@
 package com.euvic.euvic_staz_marvel.characters;
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import com.euvic.euvic_staz_marvel.models.Result;
+import com.euvic.euvic_staz_marvel.models.characters.CharactersResult;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.euvic.euvic_staz_marvel.R
-import com.euvic.euvic_staz_marvel.models.Thumbnail
-import io.reactivex.subjects.PublishSubject
-import io.reactivex.subjects.Subject
+import com.euvic.euvic_staz_marvel.models.characters.Thumbnail
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
 // ograniczyc obiekty w liscie tylko do tych wyswietlanych
-class CharactersAdapter(val characters: MutableList<Result>): RecyclerView.Adapter<CharactersAdapter.CharactersViewHolder>() {
+class CharactersAdapter(val characters: MutableList<CharactersResult>): RecyclerView.Adapter<CharactersAdapter.CharactersViewHolder>() {
     lateinit var navController: NavController
 
     inner class CharactersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(character: Result) {
+        fun bind(character: CharactersResult) {
             with(character) {
                 val thumbnail: Thumbnail? = character.thumbnail
                 val imageView: ImageView = itemView.find<ImageView>(R.id.heroImage)

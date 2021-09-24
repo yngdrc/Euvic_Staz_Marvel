@@ -27,16 +27,19 @@ class DetailsPresenter() : MviBasePresenter<DetailsView, DetailsViewState>() {
             .startWith(PartialDetailsState.Loading(true))
             .onErrorReturn { error -> PartialDetailsState.Error(error) }
 
-        val emptyIntent: Observable<PartialDetailsState> = intent { it.emptyIntent }
+        val getSeries: Observable<PartialDetailsState> = intent { it.getSeries }
             .observeOn(Schedulers.io())
-            .map {
-                PartialDetailsState.ReceivedEmpty(it) as PartialDetailsState
+            .flatMap { characterId ->
+                marvelDatasource.getSeriesByCharacterId(characterId)
+            }
+            .map { seriesDetails ->
+                PartialDetailsState.ReceivedSeries(seriesDetails) as PartialDetailsState
             }
             .startWith(PartialDetailsState.Loading(true))
             .onErrorReturn { error -> PartialDetailsState.Error(error) }
 
         val stream = Observable
-            .merge(getDetails, emptyIntent)
+            .merge(getDetails, getSeries)
             .observeOn(AndroidSchedulers.mainThread())
             .scan(DetailsViewState()) { previousState: DetailsViewState, changedState: PartialDetailsState ->
                 return@scan reducer.reduce(previousState, changedState)

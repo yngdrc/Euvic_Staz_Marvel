@@ -1,8 +1,6 @@
 package com.euvic.euvic_staz_marvel.details.mvi
 
-import com.euvic.euvic_staz_marvel.characters.mvi.MainViewState
-import com.euvic.euvic_staz_marvel.characters.mvi.PartialMainState
-import com.euvic.euvic_staz_marvel.main.ReducerBase
+import com.euvic.euvic_staz_marvel.utils.ReducerBase
 
 class DetailsReducer: ReducerBase<DetailsViewState, PartialDetailsState> {
 
@@ -12,25 +10,23 @@ class DetailsReducer: ReducerBase<DetailsViewState, PartialDetailsState> {
             is PartialDetailsState.Loading -> {
                 newState.loading = true
                 newState.details = null
-                newState.empty = 0
+                newState.series = null
                 newState.error = null
             }
             is PartialDetailsState.ReceivedDetails -> {
                 newState.loading = false
                 newState.details = (changedState as PartialDetailsState.ReceivedDetails).details
-                newState.empty = 0
                 newState.error = null
             }
-            is PartialDetailsState.ReceivedEmpty -> {
+            is PartialDetailsState.ReceivedSeries -> {
                 newState.loading = false
-                newState.details = null
-                newState.empty = 1
+                newState.series = (changedState as PartialDetailsState.ReceivedSeries).series
                 newState.error = null
             }
             is PartialDetailsState.Error -> {
                 newState.loading = false
                 newState.details = null
-                newState.empty = 0
+                newState.series = null
                 newState.error = changedState.error
             }
 

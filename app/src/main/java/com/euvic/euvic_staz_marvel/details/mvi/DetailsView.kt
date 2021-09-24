@@ -8,6 +8,6 @@ import io.reactivex.subjects.Subject
 
 interface DetailsView : MvpView {
     val getDetails: Observable<Int>
-    val emptyIntent: Observable<Int>
+    val getSeries: Observable<Int>
     fun render(viewState: DetailsViewState)
 }

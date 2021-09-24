@@ -1,7 +1,7 @@
 package com.euvic.euvic_staz_marvel.characters.mvi
 
-import com.euvic.euvic_staz_marvel.main.ViewStateChangeBase
-import com.euvic.euvic_staz_marvel.models.CharactersDataClass
+import com.euvic.euvic_staz_marvel.utils.ViewStateChangeBase
+import com.euvic.euvic_staz_marvel.models.characters.CharactersDataClass
 
 sealed class PartialMainState : ViewStateChangeBase {
     data class Loading(val isLoading: Boolean) : PartialMainState()

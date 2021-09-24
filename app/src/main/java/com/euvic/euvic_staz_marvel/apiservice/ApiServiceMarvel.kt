@@ -1,8 +1,8 @@
 package com.euvic.euvic_staz_marvel.apiservice
 
 import com.euvic.euvic_staz_marvel.utils.Constants
-import com.euvic.euvic_staz_marvel.models.CharactersDataClass
-import com.euvic.euvic_staz_marvel.models.Result
+import com.euvic.euvic_staz_marvel.models.characters.CharactersDataClass
+import com.euvic.euvic_staz_marvel.models.series.SeriesDataClass
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -33,4 +33,12 @@ interface ApiServiceMarvel {
         @Query("apikey") apiKey: String = Constants.API_PUBLIC_KEY,
         @Query("hash") hash: String = Constants.hash(),
     ): Observable<CharactersDataClass>
+
+    @GET("series")
+    fun getComicsByCharacterId(
+        @Query("characters") characterId: Int,
+        @Query("ts") ts: String = Constants.TIMESTAMP,
+        @Query("apikey") apiKey: String = Constants.API_PUBLIC_KEY,
+        @Query("hash") hash: String = Constants.hash(),
+    ): Observable<SeriesDataClass>
 }

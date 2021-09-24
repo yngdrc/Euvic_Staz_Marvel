@@ -4,4 +4,8 @@
     <item name="hero_id" type="id" />
     <item name="heroImage" type="id" />
     <item name="heroName" type="id" />
+    <item name="comicImage" type="id" />
+    <item name="comicName" type="id" />
+    <item name="seriesName" type="id" />
+    <item name="seriesImage" type="id" />
 </resources>

@@ -5,16 +5,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.euvic.euvic_staz_marvel.R
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsPresenter
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsView
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsViewState
-import com.euvic.euvic_staz_marvel.models.Result
+import com.euvic.euvic_staz_marvel.models.characters.ItemSeries
+import com.euvic.euvic_staz_marvel.models.characters.CharactersResult
+import com.euvic.euvic_staz_marvel.models.series.SeriesResult
 import com.hannesdorfmann.mosby3.mvi.MviFragment
-import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
 import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.dip
@@ -25,7 +26,12 @@ private const val ARG_PARAM2 = "param2"
 class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsView {
     private var characterID: Int? = null
     private lateinit var detailsFragmentUI: DetailsFragmentUI
-    private val subject: PublishSubject<Int> = PublishSubject.create()
+    private var seriesList: MutableList<SeriesResult> = mutableListOf()
+    private val seriesAdapter: SeriesAdapter
+
+    init {
+        seriesAdapter = SeriesAdapter(seriesList)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +44,8 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        detailsFragmentUI = DetailsFragmentUI()
+        detailsFragmentUI = DetailsFragmentUI(seriesAdapter)
         return detailsFragmentUI.createView(AnkoContext.create(ctx, this))
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
     companion object {
@@ -60,11 +62,8 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
     override val getDetails: Observable<Int>
         get() = Observable.just(characterID)
 
-    override val emptyIntent: Observable<Int>
-        get() = detailsFragmentUI.swipeRefreshLayout.refreshes()
-            .map {
-                characterID
-            }
+    override val getSeries: Observable<Int>
+        get() = Observable.just(characterID)
 
     override fun render(viewState: DetailsViewState) {
         if(viewState.loading) {
@@ -76,9 +75,11 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
             val details = viewState.details!!.data.results[0]
             setDetailsContent(details)
         }
-        if(viewState.empty==1) {
-            Log.d("Empty", "empty")
+        if(viewState.series!=null) {
+            Log.d("SERIES", viewState.series.toString())
             detailsFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
+            val series = viewState.series!!.data.results
+            setSeriesContent(series)
         }
         if(viewState.error!=null) {
             Log.d("DetailsFragment", viewState.error.toString())
@@ -86,7 +87,7 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
         }
     }
 
-    private fun setDetailsContent(details: Result) {
+    private fun setDetailsContent(details: CharactersResult) {
         detailsFragmentUI.characterImage.layoutParams.height = dip(100)
         detailsFragmentUI.characterImage.layoutParams.width = dip(100)
         Glide.with(requireContext())
@@ -95,6 +96,26 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
             .circleCrop()
             .into(detailsFragmentUI.characterImage)
         detailsFragmentUI.characterName.text = details.name
-        detailsFragmentUI.characterDescription.text = details.description
+        if (details.description.equals("")) {
+            detailsFragmentUI.characterDescription.text = "No description to show"
+        } else {
+            detailsFragmentUI.characterDescription.text = details.description
+        }
+    }
+
+    private fun setSeriesContent(series: MutableList<SeriesResult>) {
+        detailsFragmentUI.seriesProgressBar.isVisible = false
+        addToAdapter(series, seriesList)
+    }
+
+    private fun clearAdapter(list: MutableList<SeriesResult>) {
+        val size: Int = list.size
+        list.clear()
+        seriesAdapter.notifyItemRangeRemoved(0, size)
+    }
+
+    private fun addToAdapter(newResult: MutableList<SeriesResult>, list: MutableList<SeriesResult>) {
+        list.addAll(newResult)
+        seriesAdapter.notifyItemInserted(list.size - 1)
     }
 }

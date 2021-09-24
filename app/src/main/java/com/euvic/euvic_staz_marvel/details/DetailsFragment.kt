@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.euvic.euvic_staz_marvel.R
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsPresenter
@@ -17,8 +18,13 @@ import com.euvic.euvic_staz_marvel.models.series.SeriesResult
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import io.reactivex.Observable
 import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.sdk27.coroutines.onScrollChange
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.dip
+import androidx.recyclerview.widget.RecyclerView
+
+
+
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -28,6 +34,7 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
     private lateinit var detailsFragmentUI: DetailsFragmentUI
     private var seriesList: MutableList<SeriesResult> = mutableListOf()
     private val seriesAdapter: SeriesAdapter
+    private var shortAnimationDuration: Int = 0
 
     init {
         seriesAdapter = SeriesAdapter(seriesList)
@@ -106,6 +113,40 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
     private fun setSeriesContent(series: MutableList<SeriesResult>) {
         detailsFragmentUI.seriesProgressBar.isVisible = false
         addToAdapter(series, seriesList)
+        detailsFragmentUI.seriesInfo.text = series[0].description
+        detailsFragmentUI.rv.setOnScrollListener(object : RecyclerView.OnScrollListener() {
+            var scrollDx = 0
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    val llm = detailsFragmentUI.rv.layoutManager as LinearLayoutManager
+                    when(newState) {
+                        0 -> {
+                            scrollDx = llm.findLastVisibleItemPosition()
+                            detailsFragmentUI.seriesInfo.text = series[scrollDx].description
+                            detailsFragmentUI.seriesInfo.apply {
+                                shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+                                alpha = 0f
+                                visibility = View.VISIBLE
+                                animate()
+                                    .alpha(1f)
+                                    .setDuration(shortAnimationDuration.toLong())
+                                    .setListener(null)
+                            }
+                        }
+                        1 -> {
+                            detailsFragmentUI.seriesInfo.apply {
+                                shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
+                                alpha = 1f
+                                animate()
+                                    .alpha(0f)
+                                    .setDuration(shortAnimationDuration.toLong())
+                                    .setListener(null)
+                            }
+                        }
+                    }
+                }
+            }
+        )
     }
 
     private fun clearAdapter(list: MutableList<SeriesResult>) {

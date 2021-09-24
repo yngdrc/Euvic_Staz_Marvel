@@ -29,12 +29,14 @@ class DetailsFragmentUI(private val seriesAdapter: SeriesAdapter): AnkoComponent
     lateinit var characterDescription: TextView
     lateinit var rv: RecyclerView
     lateinit var seriesProgressBar: ProgressBar
+    lateinit var seriesInfo: TextView
     override fun createView(ui: AnkoContext<DetailsFragment>) = ui.apply {
         swipeRefreshLayout = swipeRefreshLayout() {
             linearLayout() {
+                topPadding = dip(32)
                 lparams(matchParent, matchParent)
                 orientation = LinearLayout.VERTICAL
-                gravity = Gravity.CENTER
+                gravity = Gravity.CENTER_HORIZONTAL
 
                 // character's image and name
                 characterImage = imageView() {
@@ -65,7 +67,7 @@ class DetailsFragmentUI(private val seriesAdapter: SeriesAdapter): AnkoComponent
                         setBackgroundColor(Color.parseColor("#f9f9f9"))
                     }.lparams(matchParent, wrapContent)
                 }.lparams(matchParent, wrapContent) {
-                    bottomMargin = dip(16)
+                    bottomMargin = dip(8)
                     gravity = Gravity.LEFT
                 }
 
@@ -95,6 +97,12 @@ class DetailsFragmentUI(private val seriesAdapter: SeriesAdapter): AnkoComponent
                             overScrollMode = View.OVER_SCROLL_NEVER
                         }.lparams(matchParent, wrapContent) {
                         }
+                        seriesInfo = textView() {
+                            textColor = Color.BLACK
+                            padding = dip(8)
+                            leftPadding = dip(16)
+                            rightPadding = dip(16)
+                        }.lparams(matchParent, wrapContent)
                     }.lparams(matchParent, wrapContent)
                 }
             }

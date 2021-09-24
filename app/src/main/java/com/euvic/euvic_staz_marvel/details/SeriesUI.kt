@@ -29,7 +29,7 @@ class SeriesUI : AnkoComponent<ViewGroup> {
                     lparams(matchParent, matchParent) {
                         imageView() {
                             id = R.id.seriesImage
-                        }
+                        }.lparams(wrapContent, matchParent)
                         textView() {
                             id = R.id.seriesName
                             textColor = Color.WHITE

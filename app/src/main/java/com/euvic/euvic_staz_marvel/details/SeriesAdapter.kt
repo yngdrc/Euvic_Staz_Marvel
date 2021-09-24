@@ -17,13 +17,14 @@ import org.jetbrains.anko.find
 class SeriesAdapter(val series: MutableList<SeriesResult>): RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>() {
 
     inner class SeriesViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(series: SeriesResult) {
+        fun bind(series: SeriesResult, position: Int) {
             with(series) {
                 val imageView: ImageView = itemView.find<ImageView>(R.id.seriesImage)
                 val thumbnail: Thumbnail = series.thumbnail
                 imageView.layoutParams.height = 250
                 imageView.layoutParams.width = 250
                 itemView.find<TextView>(R.id.seriesName).text = series.title
+
                 Glide.with(itemView.context)
                     .load("${thumbnail.path.replace("http", "https")}/standard_xlarge.${thumbnail.extension}")
                     .placeholder(R.drawable.image_placeholder_marvel_square)
@@ -41,7 +42,7 @@ class SeriesAdapter(val series: MutableList<SeriesResult>): RecyclerView.Adapter
     }
 
     override fun onBindViewHolder(holder: SeriesViewHolder, position: Int) {
-        holder.bind(series[position])
+        holder.bind(series[position], position)
 //        holder.itemView.onClick {
 //            val bundle: Bundle = Bundle()
 //            characters[position].id?.let { it1 -> bundle.putInt("characterID", it1) }

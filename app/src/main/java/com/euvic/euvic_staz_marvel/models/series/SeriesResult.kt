@@ -4,7 +4,7 @@ data class SeriesResult(
     val characters: Characters,
     val comics: Comics,
     val creators: Creators,
-    val description: Any,
+    val description: String,
     val endYear: Int,
     val events: Events,
     val id: Int,

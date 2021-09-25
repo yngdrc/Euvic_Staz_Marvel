@@ -1,8 +1,8 @@
 package com.euvic.euvic_staz_marvel.apiservice
 
 import com.euvic.euvic_staz_marvel.utils.Constants
-import com.euvic.euvic_staz_marvel.models.characters.CharactersDataClass
-import com.euvic.euvic_staz_marvel.models.series.SeriesDataClass
+import com.euvic.euvic_staz_marvel.db.models.characters.CharactersDataClass
+import com.euvic.euvic_staz_marvel.db.models.series.SeriesDataClass
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path

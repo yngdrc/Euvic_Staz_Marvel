@@ -18,6 +18,7 @@ class CharactersUI : AnkoComponent<ViewGroup> {
     val scale: Float = 0.2f
     override fun createView(ui: AnkoContext<ViewGroup>): View = with(ui) {
         cardView {
+            cardElevation = 10f
             lparams(matchParent, wrapContent) {
                 bottomMargin = dip(16)
                 leftMargin = dip(8)

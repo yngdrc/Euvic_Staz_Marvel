@@ -1,10 +1,6 @@
 package com.euvic.euvic_staz_marvel.details.mvi
 
-import android.util.Log
 import com.euvic.euvic_staz_marvel.apiservice.MarvelDatasource
-import com.euvic.euvic_staz_marvel.characters.CharactersAdapter
-import com.euvic.euvic_staz_marvel.characters.mvi.MainReducer
-import com.euvic.euvic_staz_marvel.characters.mvi.MainView
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers

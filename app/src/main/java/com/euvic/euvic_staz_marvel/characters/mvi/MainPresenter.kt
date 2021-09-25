@@ -1,19 +1,19 @@
 package com.euvic.euvic_staz_marvel.characters.mvi
 
+import android.content.Context
 import android.util.Log
 import com.euvic.euvic_staz_marvel.apiservice.MarvelDatasource
-import com.euvic.euvic_staz_marvel.characters.CharactersAdapter
 import com.euvic.euvic_staz_marvel.characters.mvi.PartialMainState.Loading
+import com.euvic.euvic_staz_marvel.db.CharactersRepo
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
+class MainPresenter(private val charactersRepo: CharactersRepo) : MviBasePresenter<MainView, MainViewState>() {
 
     private val reducer by lazy { MainReducer() }
     private val marvelDatasource: MarvelDatasource = MarvelDatasource()
-    private lateinit var adapter: CharactersAdapter
 
     // tu utworzyc datasource
     override fun bindIntents() {
@@ -21,21 +21,22 @@ class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
             .observeOn(Schedulers.io())
             .flatMap { offset ->
                 marvelDatasource.getCharacters(offset)
-            }.map {
-                PartialMainState.GotCharacters(it) as PartialMainState
+            }.map { characters ->
+                PartialMainState.GotCharacters(characters.data.results) as PartialMainState
             }
             .startWith(Loading(true))
-            .onErrorReturn { error -> PartialMainState.Error(error) }
+            .onErrorReturn { error ->
+                PartialMainState.Error(error)
+            }
 
         // zmienic na getCharacters jak bedzie puste
         val searchCharacters: Observable<PartialMainState> = intent { it.searchCharacters }
             .observeOn(Schedulers.io())
             .flatMap { searchText ->
-                Log.d("search", searchText.toString())
                 marvelDatasource.searchCharacters(searchText)
             }
-            .map {
-                PartialMainState.FoundCharacters(it) as PartialMainState
+            .map { characters ->
+                PartialMainState.FoundCharacters(characters.data.results) as PartialMainState
             }
             .startWith(Loading(true))
             .onErrorReturn { error -> PartialMainState.Error(error) }

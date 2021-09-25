@@ -7,9 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide
 import com.euvic.euvic_staz_marvel.R
-import com.euvic.euvic_staz_marvel.models.characters.ItemSeries
-import com.euvic.euvic_staz_marvel.models.series.SeriesResult
-import com.euvic.euvic_staz_marvel.models.series.Thumbnail
+import com.euvic.euvic_staz_marvel.db.models.series.SeriesResult
+import com.euvic.euvic_staz_marvel.db.models.series.SeriesThumbnail
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 
@@ -20,7 +19,7 @@ class SeriesAdapter(val series: MutableList<SeriesResult>): RecyclerView.Adapter
         fun bind(series: SeriesResult, position: Int) {
             with(series) {
                 val imageView: ImageView = itemView.find<ImageView>(R.id.seriesImage)
-                val thumbnail: Thumbnail = series.thumbnail
+                val thumbnail: SeriesThumbnail = series.thumbnail
                 imageView.layoutParams.height = 250
                 imageView.layoutParams.width = 250
                 itemView.find<TextView>(R.id.seriesName).text = series.title

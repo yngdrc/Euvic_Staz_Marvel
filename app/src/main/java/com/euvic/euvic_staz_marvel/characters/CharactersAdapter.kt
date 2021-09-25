@@ -7,11 +7,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import com.euvic.euvic_staz_marvel.models.characters.CharactersResult;
+import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide
 import com.euvic.euvic_staz_marvel.R
-import com.euvic.euvic_staz_marvel.models.characters.Thumbnail
+import com.euvic.euvic_staz_marvel.db.models.characters.CharactersThumbnail
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk27.coroutines.onClick
@@ -23,7 +23,7 @@ class CharactersAdapter(val characters: MutableList<CharactersResult>): Recycler
     inner class CharactersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(character: CharactersResult) {
             with(character) {
-                val thumbnail: Thumbnail? = character.thumbnail
+                val thumbnail: CharactersThumbnail? = character.thumbnail
                 val imageView: ImageView = itemView.find<ImageView>(R.id.heroImage)
                 imageView.layoutParams.height = 150
                 imageView.layoutParams.width = 150

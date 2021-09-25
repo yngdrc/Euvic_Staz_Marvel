@@ -1,4 +1,4 @@
-package com.euvic.euvic_staz_marvel.models.series
+package com.euvic.euvic_staz_marvel.db.models.series
 
 data class ItemComics(
     val name: String,

@@ -12,29 +12,28 @@ import com.euvic.euvic_staz_marvel.R
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsPresenter
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsView
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsViewState
-import com.euvic.euvic_staz_marvel.models.characters.ItemSeries
-import com.euvic.euvic_staz_marvel.models.characters.CharactersResult
-import com.euvic.euvic_staz_marvel.models.series.SeriesResult
+import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult
+import com.euvic.euvic_staz_marvel.db.models.series.SeriesResult
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import io.reactivex.Observable
 import org.jetbrains.anko.AnkoContext
-import org.jetbrains.anko.sdk27.coroutines.onScrollChange
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.dip
 import androidx.recyclerview.widget.RecyclerView
-
-
+import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
+import kotlin.properties.Delegates
 
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsView {
-    private var characterID: Int? = null
+    private var characterID by Delegates.notNull<Int>()
     private lateinit var detailsFragmentUI: DetailsFragmentUI
     private var seriesList: MutableList<SeriesResult> = mutableListOf()
     private val seriesAdapter: SeriesAdapter
     private var shortAnimationDuration: Int = 0
+    var scrollDx = 0
 
     init {
         seriesAdapter = SeriesAdapter(seriesList)
@@ -68,22 +67,28 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
 
     override val getDetails: Observable<Int>
         get() = Observable.just(characterID)
+            .mergeWith(detailsFragmentUI.swipeRefreshLayout.refreshes()
+                .map {
+                    characterID
+                })
 
     override val getSeries: Observable<Int>
         get() = Observable.just(characterID)
+            .mergeWith(detailsFragmentUI.swipeRefreshLayout.refreshes()
+                .map {
+                    characterID
+                })
 
     override fun render(viewState: DetailsViewState) {
         if(viewState.loading) {
 
         }
         if(viewState.details!=null) {
-            Log.d("DetailsFragment", viewState.details.toString())
             detailsFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
             val details = viewState.details!!.data.results[0]
             setDetailsContent(details)
         }
         if(viewState.series!=null) {
-            Log.d("SERIES", viewState.series.toString())
             detailsFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
             val series = viewState.series!!.data.results
             setSeriesContent(series)
@@ -113,9 +118,8 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
     private fun setSeriesContent(series: MutableList<SeriesResult>) {
         detailsFragmentUI.seriesProgressBar.isVisible = false
         addToAdapter(series, seriesList)
-        detailsFragmentUI.seriesInfo.text = series[0].description
+        detailsFragmentUI.seriesInfo.text = series[scrollDx].description
         detailsFragmentUI.rv.setOnScrollListener(object : RecyclerView.OnScrollListener() {
-            var scrollDx = 0
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     val llm = detailsFragmentUI.rv.layoutManager as LinearLayoutManager
@@ -133,7 +137,7 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
                                     .setListener(null)
                             }
                         }
-                        1 -> {
+                        2 -> {
                             detailsFragmentUI.seriesInfo.apply {
                                 shortAnimationDuration = resources.getInteger(android.R.integer.config_shortAnimTime)
                                 alpha = 1f

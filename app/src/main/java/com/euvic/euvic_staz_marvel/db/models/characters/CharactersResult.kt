@@ -5,11 +5,10 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "characters")
 data class CharactersResult(
-//    @Expose
-//    @SerializedName("comics")
-//    val comics: Comics,
+    @Expose
+    @SerializedName("comics")
+    val comics: Comics,
 
     @Expose
     @SerializedName("description")
@@ -36,7 +35,7 @@ data class CharactersResult(
     @SerializedName("thumbnail")
     val thumbnail: CharactersThumbnail,
 
-//    @Expose
-//    @SerializedName("urls")
-//    val urls: MutableList<Url>?
+    @Expose
+    @SerializedName("urls")
+    val urls: MutableList<Url>?
 )

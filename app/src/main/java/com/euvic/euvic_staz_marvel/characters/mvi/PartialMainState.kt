@@ -6,7 +6,7 @@ import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult
 
 sealed class PartialMainState : ViewStateChangeBase {
     data class Loading(val isLoading: Boolean) : PartialMainState()
-    data class GotCharacters(val characters: MutableList<CharactersResult>) : PartialMainState()
-    data class FoundCharacters(val foundCharacters: MutableList<CharactersResult>) : PartialMainState()
+    data class GotCharacters(val characters: CharactersDataClass) : PartialMainState()
+    data class FoundCharacters(val foundCharacters: CharactersDataClass) : PartialMainState()
     data class Error(val error: Throwable) : PartialMainState()
 }

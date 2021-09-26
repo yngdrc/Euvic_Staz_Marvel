@@ -6,7 +6,7 @@ import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult
 
 data class MainViewState(
     var loading: Boolean = false,
-    var characters: MutableList<CharactersResult>? = null,
-    var foundCharacters: MutableList<CharactersResult>? = null,
+    var characters: CharactersDataClass? = null,
+    var foundCharacters: CharactersDataClass? = null,
     var error: Throwable? = null
 ) : ViewStateBase

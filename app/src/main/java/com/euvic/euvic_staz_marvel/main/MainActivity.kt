@@ -6,11 +6,7 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.euvic.euvic_staz_marvel.R
-import com.euvic.euvic_staz_marvel.db.CharactersDao
-import com.euvic.euvic_staz_marvel.db.CharactersDatabase
-import com.euvic.euvic_staz_marvel.db.CharactersRepo
 import com.euvic.euvic_staz_marvel.utils.Constants.Companion.MAIN_LAYOUT_ID
-import org.jetbrains.anko.ctx
 import org.jetbrains.anko.linearLayout
 import org.jetbrains.anko.matchParent
 

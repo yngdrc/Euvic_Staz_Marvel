@@ -1,10 +1,7 @@
 package com.euvic.euvic_staz_marvel.characters.mvi
 
-import android.content.Context
-import android.util.Log
 import com.euvic.euvic_staz_marvel.apiservice.MarvelDatasource
 import com.euvic.euvic_staz_marvel.characters.mvi.PartialMainState.Loading
-import com.euvic.euvic_staz_marvel.db.CharactersRepo
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,7 +19,7 @@ class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
             .flatMap { offset ->
                 marvelDatasource.getCharacters(offset)
             }.map { characters ->
-                PartialMainState.GotCharacters(characters.data.results) as PartialMainState
+                PartialMainState.GotCharacters(characters) as PartialMainState
             }
             .startWith(Loading(true))
             .onErrorReturn { error ->
@@ -36,7 +33,7 @@ class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
                 marvelDatasource.searchCharacters(searchText)
             }
             .map { characters ->
-                PartialMainState.FoundCharacters(characters.data.results) as PartialMainState
+                PartialMainState.FoundCharacters(characters) as PartialMainState
             }
             .startWith(Loading(true))
             .onErrorReturn { error -> PartialMainState.Error(error) }

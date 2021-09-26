@@ -10,9 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.euvic.euvic_staz_marvel.characters.mvi.MainPresenter
 import com.euvic.euvic_staz_marvel.characters.mvi.MainView
 import com.euvic.euvic_staz_marvel.characters.mvi.MainViewState
-import com.euvic.euvic_staz_marvel.db.CharactersDao
-import com.euvic.euvic_staz_marvel.db.CharactersDatabase
-import com.euvic.euvic_staz_marvel.db.CharactersRepo
 import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult
 import com.euvic.euvic_staz_marvel.utils.Constants.Companion.DEFAULT_OFFSET
 import com.hannesdorfmann.mosby3.mvi.MviFragment
@@ -121,12 +118,12 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
         if(viewState.characters!=null) {
             charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
             //addToAdapter(viewState.characters!!.data.results, charactersList)
-            addToAdapter(viewState.characters!!, charactersList)
+            addToAdapter(viewState.characters!!.data.results, charactersList)
         }
         if(viewState.foundCharacters!=null) {
             charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
             clearAdapter(charactersList)
-            addToAdapter(viewState.foundCharacters!!, charactersList)
+            addToAdapter(viewState.foundCharacters!!.data.results, charactersList)
         }
         if(viewState.error!=null) {
             Log.d("ViewState", viewState.error.toString())

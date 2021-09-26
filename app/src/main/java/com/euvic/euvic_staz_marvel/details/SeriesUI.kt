@@ -25,7 +25,7 @@ class SeriesUI : AnkoComponent<ViewGroup> {
             background = GradientDrawable().apply {
                 shape = GradientDrawable.RECTANGLE
                 cornerRadius = 16f
-                setColor(Color.BLACK)
+                setColor(Color.parseColor("#0f0f0f"))
                 linearLayout {
                     lparams(matchParent, matchParent) {
                         imageView() {

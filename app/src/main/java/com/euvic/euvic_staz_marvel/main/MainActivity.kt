@@ -15,10 +15,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var mainContainer: LinearLayout
     private lateinit var finalHost: NavHostFragment
 
-    lateinit var charactersDatabase: CharactersDatabase
-    lateinit var charactersDao: CharactersDao
-    lateinit var charactersRepo: CharactersRepo
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainContainer = linearLayout {
@@ -29,9 +25,6 @@ class MainActivity : AppCompatActivity() {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT)
         )
-        charactersDatabase = CharactersDatabase.getDatabase(this)
-        charactersDao = charactersDatabase.charactersDao()
-        charactersRepo = CharactersRepo(charactersDao)
 
         // sets the navigation host fragment to fragment container
         finalHost = NavHostFragment.create(R.navigation.fragments_navigation)

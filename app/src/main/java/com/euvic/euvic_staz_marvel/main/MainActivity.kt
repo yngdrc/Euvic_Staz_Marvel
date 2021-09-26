@@ -37,12 +37,8 @@ class MainActivity : AppCompatActivity() {
         charactersDao = charactersDatabase.charactersDao()
         charactersRepo = CharactersRepo(charactersDao)
 
-        val arguments = Bundle()
-        arguments.putParcelable("charactersDatabase", charactersRepo)
-
         // sets the navigation host fragment to fragment container
         finalHost = NavHostFragment.create(R.navigation.fragments_navigation)
-        finalHost.arguments =
         supportFragmentManager.beginTransaction()
                 .replace(mainContainer.id, finalHost)
                 .setPrimaryNavigationFragment(finalHost)

@@ -10,7 +10,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class MainPresenter(private val charactersRepo: CharactersRepo) : MviBasePresenter<MainView, MainViewState>() {
+class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
 
     private val reducer by lazy { MainReducer() }
     private val marvelDatasource: MarvelDatasource = MarvelDatasource()

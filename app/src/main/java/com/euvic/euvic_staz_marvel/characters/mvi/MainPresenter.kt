@@ -1,5 +1,6 @@
 package com.euvic.euvic_staz_marvel.characters.mvi
 
+import com.bumptech.glide.Glide
 import com.euvic.euvic_staz_marvel.apiservice.MarvelDatasource
 import com.euvic.euvic_staz_marvel.characters.mvi.PartialMainState.Loading
 import com.hannesdorfmann.mosby3.mvi.MviBasePresenter

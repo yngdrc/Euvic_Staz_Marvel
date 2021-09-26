@@ -1,10 +1,14 @@
 package com.euvic.euvic_staz_marvel.details
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -20,7 +24,14 @@ import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.dip
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.ImageViewTarget
+import com.bumptech.glide.request.transition.Transition
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
+import jp.wasabeef.glide.transformations.BlurTransformation
+import org.jetbrains.anko.backgroundDrawable
+import org.jetbrains.anko.windowManager
 import kotlin.properties.Delegates
 
 
@@ -103,12 +114,25 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
         detailsFragmentUI.characterImage.layoutParams.height = dip(100)
         detailsFragmentUI.characterImage.layoutParams.width = dip(100)
         Glide.with(requireContext())
-            .load("${details.thumbnail?.path?.replace("http", "https")}/standard_fantastic.${details.thumbnail?.extension}")
+            .load("${details.thumbnail.path.replace("http", "https")}/standard_fantastic.${details.thumbnail.extension}")
             .placeholder(R.drawable.image_placeholder_marvel_circle)
             .circleCrop()
             .into(detailsFragmentUI.characterImage)
+
+        val displayMetrics = DisplayMetrics()
+        ctx.windowManager.defaultDisplay.getMetrics(displayMetrics)
+
+        val width = displayMetrics.widthPixels
+        val height = displayMetrics.heightPixels
+        Log.d("METRICS", "$width, $height")
+
+        Glide.with(requireContext())
+            .load("${details.thumbnail.path.replace("http", "https")}/detail.${details.thumbnail.extension}")
+            .apply(RequestOptions.bitmapTransform(BlurTransformation(25,3)).override(width, height))
+            .into(detailsFragmentUI.backgroundImage)
+
         detailsFragmentUI.characterName.text = details.name
-        if (details.description.equals("")) {
+        if (details.description == "") {
             detailsFragmentUI.characterDescription.text = "No description to show"
         } else {
             detailsFragmentUI.characterDescription.text = details.description

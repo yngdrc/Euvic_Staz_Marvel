@@ -18,6 +18,7 @@ class SeriesUI : AnkoComponent<ViewGroup> {
     val scale: Float = 0.2f
     override fun createView(ui: AnkoContext<ViewGroup>): View = with(ui) {
         cardView {
+            cardElevation = 10f
             lparams(matchParent, matchParent) {
                 margin = dip(16)
             }

@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.euvic.euvic_staz_marvel.characters.mvi.MainPresenter
 import com.euvic.euvic_staz_marvel.characters.mvi.MainView
 import com.euvic.euvic_staz_marvel.characters.mvi.MainViewState
-import com.euvic.euvic_staz_marvel.models.characters.CharactersResult
+import com.euvic.euvic_staz_marvel.db.CharactersDao
+import com.euvic.euvic_staz_marvel.db.CharactersDatabase
+import com.euvic.euvic_staz_marvel.db.CharactersRepo
+import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult
 import com.euvic.euvic_staz_marvel.utils.Constants.Companion.DEFAULT_OFFSET
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import com.jakewharton.rxbinding3.recyclerview.scrollEvents
@@ -28,7 +31,6 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
     private lateinit var charactersFragmentUI: CharactersFragmentUI
     private var charactersList: MutableList<CharactersResult> = mutableListOf()
     private lateinit var searchViewEditText: EditText
-
 
     init {
         adapter = CharactersAdapter(charactersList)
@@ -118,12 +120,13 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
         }
         if(viewState.characters!=null) {
             charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
-            addToAdapter(viewState.characters!!.data.results, charactersList)
+            //addToAdapter(viewState.characters!!.data.results, charactersList)
+            addToAdapter(viewState.characters!!, charactersList)
         }
         if(viewState.foundCharacters!=null) {
             charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
             clearAdapter(charactersList)
-            addToAdapter(viewState.foundCharacters!!.data.results, charactersList)
+            addToAdapter(viewState.foundCharacters!!, charactersList)
         }
         if(viewState.error!=null) {
             Log.d("ViewState", viewState.error.toString())

@@ -40,7 +40,8 @@ class DetailsFragmentUI(private val seriesAdapter: SeriesAdapter): AnkoComponent
 
                 // character's image and name
                 characterImage = imageView() {
-                }
+                    foreground = resources.getDrawable(R.drawable.container_stroke)
+                }.lparams(wrapContent, wrapContent)
                 characterName = textView() {
                     textColor = Color.BLACK
                     topPadding = dip(8)

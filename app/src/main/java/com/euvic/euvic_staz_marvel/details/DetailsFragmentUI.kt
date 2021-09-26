@@ -2,10 +2,12 @@ package com.euvic.euvic_staz_marvel.details
 
 import android.app.ProgressDialog.show
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Typeface
 import android.view.Gravity
 import android.view.View
 import android.widget.*
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.marginBottom
 import androidx.core.widget.ContentLoadingProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +24,7 @@ import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.support.v4.contentLoadingProgressBar
 
 
-class DetailsFragmentUI(private val seriesAdapter: SeriesAdapter): AnkoComponent<DetailsFragment> {
+class DetailsFragmentUI(private val seriesAdapter: SeriesAdapter) : AnkoComponent<DetailsFragment> {
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
     lateinit var characterName: TextView
     lateinit var characterImage: ImageView
@@ -30,25 +32,41 @@ class DetailsFragmentUI(private val seriesAdapter: SeriesAdapter): AnkoComponent
     lateinit var rv: RecyclerView
     lateinit var seriesProgressBar: ProgressBar
     lateinit var seriesInfo: TextView
+    lateinit var backgroundImage: ImageView
     override fun createView(ui: AnkoContext<DetailsFragment>) = ui.apply {
         swipeRefreshLayout = swipeRefreshLayout() {
             linearLayout() {
-                topPadding = dip(32)
                 lparams(matchParent, matchParent)
                 orientation = LinearLayout.VERTICAL
                 gravity = Gravity.CENTER_HORIZONTAL
 
                 // character's image and name
-                characterImage = imageView() {
-                    foreground = resources.getDrawable(R.drawable.container_stroke)
-                }.lparams(wrapContent, wrapContent)
-                characterName = textView() {
-                    textColor = Color.BLACK
-                    topPadding = dip(8)
-                    typeface = Typeface.DEFAULT_BOLD
-                }.lparams(wrapContent, wrapContent) {
-                    bottomMargin = dip(16)
-                }
+                relativeLayout() {
+                    setBackgroundColor(Color.BLACK)
+                    lparams(matchParent, wrapContent)
+                    backgroundImage = imageView() {
+                        alpha = 0.2f
+                        scaleType = ImageView.ScaleType.CENTER_CROP
+                    }.lparams(matchParent, wrapContent)
+                    linearLayout() {
+                        gravity = Gravity.CENTER_HORIZONTAL
+                        orientation = LinearLayout.VERTICAL
+                        characterImage = imageView() {
+                            foreground = ResourcesCompat.getDrawable(
+                                resources,
+                                R.drawable.container_stroke,
+                                null
+                            )
+                        }.lparams(matchParent, wrapContent)
+                        characterName = textView() {
+                            textColor = Color.WHITE
+                            topPadding = dip(8)
+                            typeface = Typeface.DEFAULT_BOLD
+                        }.lparams(wrapContent, wrapContent)
+                    }.lparams(wrapContent, wrapContent) {
+                        centerInParent()
+                    }
+                }.lparams(matchParent, wrapContent)
 
                 // description container
                 linearLayout {
@@ -68,6 +86,7 @@ class DetailsFragmentUI(private val seriesAdapter: SeriesAdapter): AnkoComponent
                         setBackgroundColor(Color.parseColor("#f9f9f9"))
                     }.lparams(matchParent, wrapContent)
                 }.lparams(matchParent, wrapContent) {
+                    topMargin = dip(16)
                     bottomMargin = dip(8)
                     gravity = Gravity.LEFT
                 }
@@ -80,24 +99,14 @@ class DetailsFragmentUI(private val seriesAdapter: SeriesAdapter): AnkoComponent
                     }
                     linearLayout {
                         orientation = LinearLayout.VERTICAL
-//                        textView {
-//                            text = "Series:"
-//                            gravity = Gravity.CENTER
-//                            textColor = Color.WHITE
-//                            setBackgroundResource(R.drawable.text_rounded)
-//                            padding = dip(2)
-//                        }.lparams(matchParent, wrapContent) {
-//                            leftMargin = dip(8)
-//                            rightMargin = dip(8)
-//                        }
                         rv = recyclerView {
                             backgroundColor = Color.WHITE
-                            layoutManager = LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false)
+                            layoutManager =
+                                LinearLayoutManager(ctx, LinearLayoutManager.HORIZONTAL, false)
                             adapter = seriesAdapter
                             PagerSnapHelper().attachToRecyclerView(this)
                             overScrollMode = View.OVER_SCROLL_NEVER
-                        }.lparams(matchParent, wrapContent) {
-                        }
+                        }.lparams(matchParent, wrapContent)
                         seriesInfo = textView() {
                             textColor = Color.BLACK
                             padding = dip(8)

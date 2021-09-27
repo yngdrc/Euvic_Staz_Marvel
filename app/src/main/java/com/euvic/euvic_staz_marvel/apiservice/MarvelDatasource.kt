@@ -1,10 +1,10 @@
 package com.euvic.euvic_staz_marvel.apiservice
 
-import com.euvic.euvic_staz_marvel.db.CharactersRepo
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersDataClass
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.CharactersDataClass
 import com.euvic.euvic_staz_marvel.db.models.series.SeriesDataClass
 import io.reactivex.Observable
 
+// baza danych tutaj
 class MarvelDatasource() {
     fun getCharacters(offset: Int): Observable<CharactersDataClass> {
         return RetrofitBuilder.apiService.getCharacters(offset)

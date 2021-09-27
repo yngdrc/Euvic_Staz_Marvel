@@ -1,7 +1,7 @@
 package com.euvic.euvic_staz_marvel.details.mvi
 
 import com.euvic.euvic_staz_marvel.utils.ViewStateChangeBase
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersDataClass
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.CharactersDataClass
 import com.euvic.euvic_staz_marvel.db.models.series.SeriesDataClass
 
 sealed class PartialDetailsState : ViewStateChangeBase {

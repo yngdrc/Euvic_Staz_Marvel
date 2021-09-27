@@ -7,21 +7,21 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult;
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.CharactersResultDTO;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide
 import com.euvic.euvic_staz_marvel.R
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersThumbnail
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.CharactersThumbnail
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.find
 import org.jetbrains.anko.sdk27.coroutines.onClick
 
 // ograniczyc obiekty w liscie tylko do tych wyswietlanych
-class CharactersAdapter(val characters: MutableList<CharactersResult>): RecyclerView.Adapter<CharactersAdapter.CharactersViewHolder>() {
+class CharactersAdapter(val characters: MutableList<CharactersResultDTO>): RecyclerView.Adapter<CharactersAdapter.CharactersViewHolder>() {
     lateinit var navController: NavController
 
     inner class CharactersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(character: CharactersResult) {
+        fun bind(character: CharactersResultDTO) {
             with(character) {
                 val thumbnail: CharactersThumbnail? = character.thumbnail
                 val imageView: ImageView = itemView.find<ImageView>(R.id.heroImage)

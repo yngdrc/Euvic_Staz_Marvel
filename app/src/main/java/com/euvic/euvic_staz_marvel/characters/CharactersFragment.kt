@@ -12,10 +12,8 @@ import androidx.room.RoomDatabase
 import com.euvic.euvic_staz_marvel.characters.mvi.MainPresenter
 import com.euvic.euvic_staz_marvel.characters.mvi.MainView
 import com.euvic.euvic_staz_marvel.characters.mvi.MainViewState
-import com.euvic.euvic_staz_marvel.db.CharactersDao
 import com.euvic.euvic_staz_marvel.db.CharactersDatabase
-import com.euvic.euvic_staz_marvel.db.CharactersRepo
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.CharactersResultDTO
 import com.euvic.euvic_staz_marvel.utils.Constants.Companion.DEFAULT_OFFSET
 import com.euvic.euvic_staz_marvel.utils.DataConverter
 import com.hannesdorfmann.mosby3.mvi.MviFragment
@@ -32,7 +30,7 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
     private var param1: String? = null
     private val adapter: CharactersAdapter
     private lateinit var charactersFragmentUI: CharactersFragmentUI
-    private var charactersList: MutableList<CharactersResult> = mutableListOf()
+    private var charactersList: MutableList<CharactersResultDTO> = mutableListOf()
     private lateinit var searchViewEditText: EditText
     private lateinit var db: RoomDatabase
 
@@ -141,13 +139,13 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
         }
     }
 
-    private fun clearAdapter(list: MutableList<CharactersResult>) {
+    private fun clearAdapter(list: MutableList<CharactersResultDTO>) {
         val size: Int = list.size
         list.clear()
         adapter.notifyItemRangeRemoved(0, size)
     }
 
-    private fun addToAdapter(newResult: MutableList<CharactersResult>, list: MutableList<CharactersResult>) {
+    private fun addToAdapter(newResult: MutableList<CharactersResultDTO>, list: MutableList<CharactersResultDTO>) {
         list.addAll(newResult)
         adapter.notifyItemInserted(list.size - 1)
     }

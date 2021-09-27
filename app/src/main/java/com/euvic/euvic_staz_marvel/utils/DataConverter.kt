@@ -1,9 +1,9 @@
 package com.euvic.euvic_staz_marvel.utils
 
 import androidx.room.TypeConverter
-import com.euvic.euvic_staz_marvel.db.models.characters.Comics
-import com.euvic.euvic_staz_marvel.db.models.characters.Series
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersThumbnail
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.Comics
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.Series
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.CharactersThumbnail
 import com.google.gson.reflect.TypeToken
 
 import com.google.gson.Gson

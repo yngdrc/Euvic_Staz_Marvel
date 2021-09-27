@@ -2,24 +2,22 @@ package com.euvic.euvic_staz_marvel.db
 
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersData
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersDataClass
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.CharactersResultDTO
 
 @Dao
 interface CharactersDao {
     @Insert
-    fun insert(characters: CharactersResult)
+    fun insert(characters: CharactersResultDTO)
 
     @Update
-    fun update(characters: CharactersResult)
+    fun update(characters: CharactersResultDTO)
 
     @Delete
-    fun delete(characters: CharactersResult)
+    fun delete(characters: CharactersResultDTO)
 
     @Query("SELECT * FROM characters")
-    fun getCharacters(): MutableList<CharactersResult>
+    fun getCharacters(): MutableList<CharactersResultDTO>
 
     @RawQuery
-    fun getCharactersViaQuery(query: SupportSQLiteQuery): MutableList<CharactersResult>
+    fun getCharactersViaQuery(query: SupportSQLiteQuery): MutableList<CharactersResultDTO>
 }

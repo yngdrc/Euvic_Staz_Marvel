@@ -1,21 +1,18 @@
 package com.euvic.euvic_staz_marvel.db
 
-import com.euvic.euvic_staz_marvel.db.CharactersDao
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersData
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersDataClass
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.CharactersResultDTO
 
 open class CharactersRepo(private val charactersDao: CharactersDao) {
-    fun insertCharacters(characters: CharactersResult) =
+    fun insertCharacters(characters: CharactersResultDTO) =
         charactersDao.insert(characters)
 
-    fun updateCharacters(characters: CharactersResult) =
+    fun updateCharacters(characters: CharactersResultDTO) =
         charactersDao.update(characters)
 
-    fun deleteCharacters(characters: CharactersResult) =
+    fun deleteCharacters(characters: CharactersResultDTO) =
         charactersDao.delete(characters)
 
-    fun getAllCharacters(): MutableList<CharactersResult> {
+    fun getAllCharacters(): MutableList<CharactersResultDTO> {
         return charactersDao.getCharacters()
     }
 }

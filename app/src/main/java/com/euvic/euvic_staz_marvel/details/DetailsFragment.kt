@@ -12,7 +12,7 @@ import com.euvic.euvic_staz_marvel.R
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsPresenter
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsView
 import com.euvic.euvic_staz_marvel.details.mvi.DetailsViewState
-import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult
+import com.euvic.euvic_staz_marvel.db.models.characters.dto.CharactersResultDTO
 import com.euvic.euvic_staz_marvel.db.models.series.SeriesResult
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import io.reactivex.Observable
@@ -63,6 +63,7 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
             }
     }
 
+    // kodein - baza danych - singleton
     override fun createPresenter(): DetailsPresenter = DetailsPresenter()
 
     override val getDetails: Observable<Int>
@@ -99,7 +100,7 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
         }
     }
 
-    private fun setDetailsContent(details: CharactersResult) {
+    private fun setDetailsContent(details: CharactersResultDTO) {
         detailsFragmentUI.characterImage.layoutParams.height = dip(100)
         detailsFragmentUI.characterImage.layoutParams.width = dip(100)
         Glide.with(requireContext())

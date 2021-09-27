@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
             ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT)
         )
+
         charactersDatabase = CharactersDatabase.getDatabase(this)
         charactersDao = charactersDatabase.charactersDao()
         charactersRepo = CharactersRepo(charactersDao)

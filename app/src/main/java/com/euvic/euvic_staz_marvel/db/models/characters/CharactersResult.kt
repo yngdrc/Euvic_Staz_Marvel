@@ -1,6 +1,7 @@
 package com.euvic.euvic_staz_marvel.db.models.characters
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -17,7 +18,7 @@ data class CharactersResult(
 
     @Expose
     @SerializedName("id")
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey()
     val id: Int,
 
     @Expose
@@ -28,9 +29,9 @@ data class CharactersResult(
     @SerializedName("resourceURI")
     val resourceURI: String,
 
-    @Expose
-    @SerializedName("series")
-    val series: Series,
+//    @Expose
+//    @SerializedName("series")
+//    val series: Series,
 
     @Expose
     @SerializedName("thumbnail")

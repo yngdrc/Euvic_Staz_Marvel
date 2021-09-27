@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.euvic.euvic_staz_marvel.characters.mvi.MainPresenter
 import com.euvic.euvic_staz_marvel.characters.mvi.MainView
 import com.euvic.euvic_staz_marvel.characters.mvi.MainViewState
@@ -15,6 +17,7 @@ import com.euvic.euvic_staz_marvel.db.CharactersDatabase
 import com.euvic.euvic_staz_marvel.db.CharactersRepo
 import com.euvic.euvic_staz_marvel.db.models.characters.CharactersResult
 import com.euvic.euvic_staz_marvel.utils.Constants.Companion.DEFAULT_OFFSET
+import com.euvic.euvic_staz_marvel.utils.DataConverter
 import com.hannesdorfmann.mosby3.mvi.MviFragment
 import com.jakewharton.rxbinding3.recyclerview.scrollEvents
 import com.jakewharton.rxbinding3.swiperefreshlayout.refreshes
@@ -31,6 +34,7 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
     private lateinit var charactersFragmentUI: CharactersFragmentUI
     private var charactersList: MutableList<CharactersResult> = mutableListOf()
     private lateinit var searchViewEditText: EditText
+    private lateinit var db: RoomDatabase
 
     init {
         adapter = CharactersAdapter(charactersList)
@@ -49,6 +53,9 @@ class CharactersFragment() : MviFragment<MainView, MainPresenter>(), MainView {
         savedInstanceState: Bundle?
     ): View {
         charactersFragmentUI = CharactersFragmentUI(adapter)
+        db = Room.databaseBuilder(ctx, CharactersDatabase::class.java, "characters.db")
+        .addTypeConverter(DataConverter())
+            .build()
         return charactersFragmentUI.createView(AnkoContext.create(ctx, this))
     }
 

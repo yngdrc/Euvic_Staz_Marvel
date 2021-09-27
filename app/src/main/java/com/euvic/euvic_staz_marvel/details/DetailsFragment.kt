@@ -103,12 +103,12 @@ class DetailsFragment : MviFragment<DetailsView, DetailsPresenter>(), DetailsVie
         detailsFragmentUI.characterImage.layoutParams.height = dip(100)
         detailsFragmentUI.characterImage.layoutParams.width = dip(100)
         Glide.with(requireContext())
-            .load("${details.thumbnail?.path?.replace("http", "https")}/standard_fantastic.${details.thumbnail?.extension}")
+            .load("${details.thumbnail.path.replace("http", "https")}/standard_fantastic.${details.thumbnail.extension}")
             .placeholder(R.drawable.image_placeholder_marvel_circle)
             .circleCrop()
             .into(detailsFragmentUI.characterImage)
         detailsFragmentUI.characterName.text = details.name
-        if (details.description.equals("")) {
+        if (details.description == "") {
             detailsFragmentUI.characterDescription.text = "No description to show"
         } else {
             detailsFragmentUI.characterDescription.text = details.description

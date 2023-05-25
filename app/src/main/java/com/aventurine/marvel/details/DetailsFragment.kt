@@ -19,7 +19,7 @@ import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.dip
 import androidx.recyclerview.widget.RecyclerView
 import com.aventurine.R
-import com.aventurine.marvel.MviFragment
+import com.aventurine.marvel.mosby.MviFragment
 import com.bumptech.glide.request.RequestOptions
 import com.jakewharton.rxbinding4.swiperefreshlayout.refreshes
 import io.reactivex.rxjava3.core.Observable

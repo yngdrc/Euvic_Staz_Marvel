@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aventurine.marvel.MviFragment
+import com.aventurine.marvel.mosby.MviFragment
 import com.aventurine.marvel.characters.mvi.MainPresenter
 import com.aventurine.marvel.characters.mvi.MainView
 import com.aventurine.marvel.characters.mvi.MainViewState

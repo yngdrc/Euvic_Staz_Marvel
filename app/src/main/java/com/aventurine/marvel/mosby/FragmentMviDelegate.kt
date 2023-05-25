@@ -1,4 +1,4 @@
-package com.aventurine.marvel
+package com.aventurine.marvel.mosby
 
 import android.app.Activity
 import android.content.Context

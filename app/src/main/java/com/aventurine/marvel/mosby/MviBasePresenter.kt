@@ -1,4 +1,4 @@
-package com.aventurine.marvel
+package com.aventurine.marvel.mosby
 
 import androidx.annotation.CallSuper
 import androidx.annotation.MainThread

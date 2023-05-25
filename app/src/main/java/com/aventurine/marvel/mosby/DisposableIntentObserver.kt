@@ -1,6 +1,5 @@
-package com.aventurine.marvel
+package com.aventurine.marvel.mosby
 
-import androidx.annotation.NonNull
 import io.reactivex.rxjava3.observers.DisposableObserver
 import io.reactivex.rxjava3.subjects.Subject
 

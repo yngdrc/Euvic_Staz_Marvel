@@ -1,9 +1,7 @@
 package com.aventurine.marvel.details.mvi
 
-import com.aventurine.marvel.MviBasePresenter
+import com.aventurine.marvel.mosby.MviBasePresenter
 import com.aventurine.marvel.apiservice.MarvelDatasource
-import com.aventurine.marvel.characters.mvi.MainView
-import com.aventurine.marvel.characters.mvi.MainViewState
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers

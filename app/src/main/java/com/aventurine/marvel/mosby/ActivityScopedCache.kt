@@ -1,4 +1,4 @@
-package com.aventurine.marvel
+package com.aventurine.marvel.mosby
 
 import android.util.ArrayMap
 import com.hannesdorfmann.mosby3.mvp.MvpPresenter

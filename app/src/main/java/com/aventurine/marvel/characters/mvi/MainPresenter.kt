@@ -1,6 +1,6 @@
 package com.aventurine.marvel.characters.mvi
 
-import com.aventurine.marvel.MviBasePresenter
+import com.aventurine.marvel.mosby.MviBasePresenter
 import com.aventurine.marvel.apiservice.MarvelDatasource
 import com.aventurine.marvel.characters.mvi.PartialMainState.Loading
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers

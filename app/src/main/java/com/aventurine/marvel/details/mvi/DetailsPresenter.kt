@@ -12,11 +12,7 @@ class DetailsPresenter() : MviBasePresenter<DetailsView, DetailsViewState>() {
     private val marvelDatasource: MarvelDatasource = MarvelDatasource()
 
     override fun bindIntents() {
-        val getDetails: Observable<PartialDetailsState> = intent(object : ViewIntentBinder<DetailsView, Int> {
-            override fun bind(view: DetailsView): Observable<Int> {
-                return view.getDetails
-            }
-        })
+        val getDetails: Observable<PartialDetailsState> = intent { it.getDetails }
             .observeOn(Schedulers.io())
             .flatMap { characterId ->
                 marvelDatasource.getDetails(characterId)
@@ -27,11 +23,7 @@ class DetailsPresenter() : MviBasePresenter<DetailsView, DetailsViewState>() {
             .startWithItem(PartialDetailsState.Loading(true))
             .onErrorReturn { error -> PartialDetailsState.Error(error) }
 
-        val getSeries: Observable<PartialDetailsState> = intent(object : ViewIntentBinder<DetailsView, Int> {
-            override fun bind(view: DetailsView): Observable<Int> {
-                return view.getSeries
-            }
-        })
+        val getSeries: Observable<PartialDetailsState> = intent { it.getSeries }
             .observeOn(Schedulers.io())
             .flatMap { characterId ->
                 marvelDatasource.getSeriesByCharacterId(characterId)

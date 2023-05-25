@@ -4,20 +4,16 @@ import com.aventurine.marvel.db.models.characters.CharactersDataClass
 import com.aventurine.marvel.db.models.series.SeriesDataClass
 import io.reactivex.rxjava3.core.Observable
 
-class MarvelDatasource() {
-    fun getCharacters(offset: Int): Observable<CharactersDataClass> {
-        return RetrofitBuilder.apiService.getCharacters(offset)
-    }
+class MarvelDatasource {
+    fun getCharacters(offset: Int): Observable<CharactersDataClass> =
+        RetrofitBuilder.apiService.getCharacters(offset = offset)
 
-    fun getDetails(characterId: Int): Observable<CharactersDataClass> {
-        return RetrofitBuilder.apiService.getCharacterById(characterId)
-    }
+    fun getDetails(characterId: Int): Observable<CharactersDataClass> =
+        RetrofitBuilder.apiService.getCharacterById(id = characterId)
 
-    fun searchCharacters(searchText: CharSequence): Observable<CharactersDataClass> {
-        return RetrofitBuilder.apiService.searchCharacters(searchText)
-    }
+    fun searchCharacters(searchText: CharSequence): Observable<CharactersDataClass> =
+        RetrofitBuilder.apiService.searchCharacters(searchText = searchText)
 
-    fun getSeriesByCharacterId(characterId: Int): Observable<SeriesDataClass> {
-        return RetrofitBuilder.apiService.getComicsByCharacterId(characterId)
-    }
+    fun getSeriesByCharacterId(characterId: Int): Observable<SeriesDataClass> =
+        RetrofitBuilder.apiService.getComicsByCharacterId(characterId = characterId)
 }

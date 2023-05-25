@@ -6,20 +6,15 @@ import com.aventurine.marvel.characters.mvi.PartialMainState.Loading
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import com.aventurine.marvel.mosby.ViewIntentBinder
 
-class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
+class MainPresenter : MviBasePresenter<MainView, MainViewState>() {
 
     private val reducer by lazy { MainReducer() }
     private val marvelDatasource: MarvelDatasource = MarvelDatasource()
 
-    // tu utworzyc datasource
     override fun bindIntents() {
-        val getCharacters: Observable<PartialMainState> =
-            intent(object : ViewIntentBinder<MainView, Int> {
-                override fun bind(view: MainView): Observable<Int> {
-                    return view.getCharacters
-                }
-            })
+        val getCharacters: Observable<PartialMainState> = intent { it.getCharacters }
                 .observeOn(Schedulers.io())
                 .flatMap { offset ->
                     marvelDatasource.getCharacters(offset)
@@ -32,13 +27,8 @@ class MainPresenter() : MviBasePresenter<MainView, MainViewState>() {
                 }
 
         // zmienic na getCharacters jak bedzie puste
-        val searchCharacters: Observable<PartialMainState> =
-            intent(object : ViewIntentBinder<MainView, CharSequence> {
-                override fun bind(view: MainView): Observable<CharSequence> {
-                    return view.searchCharacters
-                }
-            })
-                .observeOn(Schedulers.io())
+        val searchCharacters: Observable<PartialMainState> = intent { it.searchCharacters }
+            .observeOn(Schedulers.io())
                 .flatMap { searchText ->
                     marvelDatasource.searchCharacters(searchText)
                 }

@@ -129,7 +129,7 @@ abstract class MviBasePresenter<V : MvpView, VS: Any> : MviPresenter<V, VS> {
     </I> */
     private inner class IntentRelayBinderPair<I : Any>(
         val intentRelaySubject: Subject<I>,
-        val intentBinder: ViewIntentBinder<V, I>
+        val intentBinder: com.aventurine.marvel.mosby.ViewIntentBinder<V, I>
     )
 
     /**
@@ -419,7 +419,7 @@ abstract class MviBasePresenter<V : MvpView, VS: Any> : MviPresenter<V, VS> {
      * @return The decorated intent Observable emitting the intent
     </I> */
     @MainThread
-    protected fun <I : Any> intent(binder: ViewIntentBinder<V, I>): Observable<I> {
+    protected fun <I : Any> intent(binder: com.aventurine.marvel.mosby.ViewIntentBinder<V, I>): Observable<I> {
         val intentRelay: Subject<I> = UnicastSubject.create()
         intentRelaysBinders.add(IntentRelayBinderPair(intentRelay, binder))
         return intentRelay
@@ -444,12 +444,12 @@ abstract class MviBasePresenter<V : MvpView, VS: Any> : MviPresenter<V, VS> {
             ?: throw NullPointerException(
                 "IntentRelay from binderPair is null. This is a Mosby internal bug. Please file an issue at https://github.com/sockeqwe/mosby/issues"
             )
-        val intentBinder = relayBinderPair.intentBinder as ViewIntentBinder<V, I>
+        val intentBinder = relayBinderPair.intentBinder as com.aventurine.marvel.mosby.ViewIntentBinder<V, I>
             ?: throw NullPointerException(
                 ViewIntentBinder::class.java.simpleName
                         + " is null. This is a Mosby internal bug. Please file an issue at https://github.com/sockeqwe/mosby/issues"
             )
-        val intent = intentBinder.bind(view)
+        val intent = intentBinder(view)
             ?: throw NullPointerException(
                 "Intent Observable returned from Binder $intentBinder is null"
             )
@@ -462,3 +462,5 @@ abstract class MviBasePresenter<V : MvpView, VS: Any> : MviPresenter<V, VS> {
         return intentRelay
     }
 }
+
+typealias ViewIntentBinder<V, I> = (view: V) -> Observable<I>

@@ -5,140 +5,73 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.aventurine.R
 import com.aventurine.marvel.mosby.MviFragment
-import com.aventurine.marvel.characters.mvi.MainPresenter
-import com.aventurine.marvel.characters.mvi.MainView
-import com.aventurine.marvel.characters.mvi.MainViewState
+import com.aventurine.marvel.characters.mvi.CharactersFragmentPresenter
+import com.aventurine.marvel.characters.mvi.CharactersView
+import com.aventurine.marvel.characters.mvi.CharactersViewState
 import com.aventurine.marvel.db.models.characters.CharactersResult
-import com.aventurine.marvel.utils.Constants.Companion.DEFAULT_OFFSET
 import com.jakewharton.rxbinding4.recyclerview.scrollEvents
 import com.jakewharton.rxbinding4.swiperefreshlayout.refreshes
-import com.jakewharton.rxbinding4.widget.textChanges
+import com.jakewharton.rxbinding4.widget.queryTextChanges
 import io.reactivex.rxjava3.core.Observable
-import org.jetbrains.anko.AnkoContext
-import org.jetbrains.anko.support.v4.ctx
+import io.reactivex.subjects.PublishSubject
+import java.util.Optional
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-class CharactersFragment : MviFragment<MainView, MainPresenter>(), MainView {
-    private var param1: String? = null
-    private val adapter: CharactersAdapter
-    private lateinit var charactersFragmentUI: CharactersFragmentUI
-    private var charactersList: MutableList<CharactersResult> = mutableListOf()
-    private lateinit var searchViewEditText: EditText
+class CharactersFragment : MviFragment<CharactersView, CharactersFragmentPresenter>(),
+    CharactersView {
+    private var layout: CharactersFragmentLayout? = null
 
-    init {
-        adapter = CharactersAdapter(charactersList)
-    }
+    override val refreshIntent: Observable<Unit>
+        get() = layout?.swipeRefreshLayout?.refreshes() ?: Observable.empty()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-        }
-    }
+    override val searchIntent: Observable<CharSequence>
+        get() = layout?.searchView?.queryTextChanges()?.skipInitialValue() ?: Observable.empty()
+
+    override val itemActionIntent: Observable<CharacterItemAction>
+        get() = layout?.charactersAdapter?.actionRelay ?: Observable.empty()
+
+    override val scrollEvents: Observable<Int>
+        get() = layout?.charactersRecyclerView?.scrollEvents()?.map { event ->
+            Optional.ofNullable(layout) to event
+        }?.filter { it.first.isPresent }?.map {
+            it.first.get() to it.second
+        }?.filter { (layout, event) ->
+            val layoutManager = event.view.layoutManager as LinearLayoutManager
+            layoutManager.findLastCompletelyVisibleItemPosition() == layout.charactersAdapter.itemCount - 1
+                    && layout.searchView.query.isEmpty()
+                    && layout.charactersAdapter.itemCount != 0
+        }?.map { (layout, _) ->
+            layout.charactersAdapter.itemCount
+        } ?: Observable.empty()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        charactersFragmentUI = CharactersFragmentUI(adapter)
-        return charactersFragmentUI.createView(AnkoContext.create(ctx, this))
-    }
+    ): View = CharactersFragmentLayout(requireContext()).also { layout = it }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        searchViewEditText = charactersFragmentUI.searchView.findViewById<EditText>(charactersFragmentUI.searchView.context.resources.getIdentifier("android:id/search_src_text", null, null))
-    }
+    override fun createPresenter(): CharactersFragmentPresenter = CharactersFragmentPresenter()
 
-    companion object {
-        fun newInstance(param1: String) =
-            CharactersFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                }
+    override fun render(viewState: CharactersViewState) {
+        if (viewState.navigate != null) {
+            val bundle = Bundle().apply {
+                putInt("characterID", viewState.navigate!!)
             }
+            return findNavController().navigate(
+                R.id.action_charactersFragment_to_detailsFragment,
+                bundle
+            )
+        }
+
+        if (viewState.characters != null)
+            renderCharacters(state = viewState)
     }
 
-    override fun createPresenter(): MainPresenter = MainPresenter()
-
-    // rozdzielic intenty
-    // zeby usunac
-    override val getCharacters: Observable<Int>
-        get() = Observable.merge(
-            charactersFragmentUI.swipeRefreshLayout.refreshes()
-                .mergeWith(
-                    searchViewEditText.textChanges()
-                        .filter { searchText ->
-                            searchText.isEmpty()
-                        }
-                        .map {
-                            clearAdapter(charactersList)
-                            Unit
-                        }
-                )
-                .map {
-                    clearAdapter(charactersList)
-                    DEFAULT_OFFSET
-                },
-            charactersFragmentUI.rv.scrollEvents()
-                .distinctUntilChanged()
-                .filter {
-                    val layoutManager = it.view.layoutManager as LinearLayoutManager
-                    layoutManager.findLastCompletelyVisibleItemPosition() == adapter.itemCount - 1
-                        && charactersFragmentUI.searchView.query.isEmpty()
-                            && adapter.itemCount != 0
-                }
-                .map {
-                    adapter.itemCount
-                }
-        )
-
-    override val searchCharacters: Observable<CharSequence>
-        get() = searchViewEditText.textChanges()
-            .skipInitialValue()
-            .map { searchText ->
-                searchText.trim()
-            }
-            .filter { searchText ->
-                searchText.isNotEmpty()
-            }
-
-    override fun onPause() {
-        super.onPause()
-        clearAdapter(charactersList)
-    }
-
-    override fun render(viewState: MainViewState) {
-        if(viewState.loading) {
-        }
-        if(viewState.characters!=null) {
-            charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
-            //addToAdapter(viewState.characters!!.data.results, charactersList)
-            addToAdapter(viewState.characters!!.data.results, charactersList)
-        }
-        if(viewState.foundCharacters!=null) {
-            charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
-            clearAdapter(charactersList)
-            addToAdapter(viewState.foundCharacters!!.data.results, charactersList)
-        }
-        if(viewState.error!=null) {
-            Log.d("ViewState", viewState.error.toString())
-            charactersFragmentUI.swipeRefreshLayout.isRefreshing = viewState.loading
-        }
-    }
-
-    private fun clearAdapter(list: MutableList<CharactersResult>) {
-        val size: Int = list.size
-        list.clear()
-        adapter.notifyItemRangeRemoved(0, size)
-    }
-
-    private fun addToAdapter(newResult: MutableList<CharactersResult>, list: MutableList<CharactersResult>) {
-        list.addAll(newResult)
-        adapter.notifyItemInserted(list.size - 1)
+    private fun renderCharacters(state: CharactersViewState) = state.characters?.let {
+        layout?.swipeRefreshLayout?.isRefreshing = state.loading
+        layout?.charactersAdapter?.submitList(list = it.data.results)
     }
 }

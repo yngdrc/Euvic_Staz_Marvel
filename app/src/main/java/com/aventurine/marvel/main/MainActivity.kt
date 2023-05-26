@@ -1,36 +1,32 @@
 package com.aventurine.marvel.main
 
+import android.content.Context
 import android.os.Bundle
-import android.view.ViewGroup
+import android.os.PersistableBundle
+import android.util.AttributeSet
+import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.aventurine.R
-import com.aventurine.marvel.utils.Constants.Companion.MAIN_LAYOUT_ID
-import org.jetbrains.anko.linearLayout
-import org.jetbrains.anko.matchParent
 
 
 class MainActivity : AppCompatActivity() {
-    lateinit var mainContainer: LinearLayout
-    private lateinit var finalHost: NavHostFragment
+    private lateinit var layout: LinearLayout
+    private val navHostFragment: NavHostFragment = NavHostFragment.create(R.navigation.fragments_navigation)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
         super.onCreate(savedInstanceState)
-        mainContainer = linearLayout {
-            lparams(matchParent, matchParent)
-            id = MAIN_LAYOUT_ID
-        }
-        setContentView(mainContainer, ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.MATCH_PARENT)
+        setContentView(
+            MainActivityLayout(context = this.application).also {
+                supportFragmentManager.beginTransaction()
+                    .replace(it.fragmentContainer.id, navHostFragment)
+                    .setPrimaryNavigationFragment(navHostFragment)
+                    .commit()
+                layout = it
+            }
         )
-
-        // sets the navigation host fragment to fragment container
-        finalHost = NavHostFragment.create(R.navigation.fragments_navigation)
-        supportFragmentManager.beginTransaction()
-                .replace(mainContainer.id, finalHost)
-                .setPrimaryNavigationFragment(finalHost)
-                .commit()
     }
 }
